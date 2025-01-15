@@ -2,6 +2,7 @@
   text-align: center;
 }
 
-*{
-  background-color: rgb(56, 52, 52);
+body {
+  background-color: #101010; /* Dark background */
+  color: #d1d1d1;
 }

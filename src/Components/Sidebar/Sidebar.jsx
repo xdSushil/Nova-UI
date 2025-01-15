@@ -65,7 +65,7 @@ function Sidebar() {
                         sm: "6.5vh",
                         xs: "4vh",
                     },
-                    backgroundColor: '#b7de0b',
+                    backgroundColor: '#31a3a3',
                     zIndex: 0,
                     borderRadius: '15px',
                     transition: 'top 0.3s ease',
