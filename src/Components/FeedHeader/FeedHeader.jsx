@@ -72,13 +72,13 @@ function FeedHeader() {
         }} />
       </IconButton>
       
-      {/* <Box sx={{
+      <Box sx={{
         backgroundColor:"transparent",
         position:"absolute",
-        right:"8%"
+        right:"5.5%"
       }}>
         <Switches />
-      </Box> */}
+      </Box>
 
     </Box>
   )
