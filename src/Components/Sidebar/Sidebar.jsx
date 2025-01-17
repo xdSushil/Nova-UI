@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Paper, Box } from '@mui/material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -9,17 +9,33 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 
 function Sidebar() {
-    const [activeIcon, setActiveIcon] = useState(0.10); // To track which icon is active
+    const [activeIcon, setActiveIcon] = useState(0.10); // Default active icon
     const [hoveredLabel, setHoveredLabel] = useState(null); // To track hovered icon
     const navigate = useNavigate();
+
     const icons = [
         { id: 0.10, Icon: HomeOutlinedIcon, label: 'Home' },
         { id: 1.10, Icon: AssessmentOutlinedIcon, label: 'Analytics' },
         { id: 2.05, Icon: StorefrontOutlinedIcon, label: 'Store' },
         { id: 3.02, Icon: AddBusinessOutlinedIcon, label: 'Network' },
-        { id: 4, Icon: ChatBubbleOutlineOutlinedIcon, label: 'chats' },
+        { id: 4, Icon: ChatBubbleOutlineOutlinedIcon, label: 'Chats' },
         { id: 4.96, Icon: SettingsOutlinedIcon, label: 'Settings' },
     ];
+
+    // Load active icon from localStorage on mount
+    useEffect(() => {
+        const storedIcon = localStorage.getItem('activeIcon');
+        if (storedIcon) {
+            setActiveIcon(parseFloat(storedIcon)); // Convert string to float
+        }
+    }, []);
+
+    // Update localStorage whenever activeIcon changes
+    const handleIconClick = (id, label) => {
+        setActiveIcon(id);
+        localStorage.setItem('activeIcon', id); // Save active icon to localStorage
+        navigate("/" + label); // Navigate to the selected route
+    };
 
     return (
         <Paper
@@ -49,7 +65,6 @@ function Sidebar() {
                 gap: {
                     xs: 8,
                     sm: 10,
-                    
                 },
             }}
         >
@@ -82,11 +97,11 @@ function Sidebar() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor:"transparent"
+                        backgroundColor: "transparent"
                     }}
                     onMouseEnter={() => setHoveredLabel(label)}
                     onMouseLeave={() => setHoveredLabel(null)}
-                    onClick = {()=>navigate("/"+label)}
+                    onClick={() => handleIconClick(id, label)}
                 >
                     <Icon
                         sx={{
@@ -106,7 +121,6 @@ function Sidebar() {
                                 },
                             },
                         }}
-                        onClick={() => setActiveIcon(id)} // Update the active icon on click
                     />
                     {hoveredLabel === label && (
                         <Box
@@ -118,7 +132,7 @@ function Sidebar() {
                                 padding: '2px 5px',
                                 fontSize: '14px',
                                 borderRadius: '4px',
-                                pointerEvents: 'none', // Prevent tooltip from capturing pointer events
+                                pointerEvents: 'none',
                             }}
                         >
                             {label}

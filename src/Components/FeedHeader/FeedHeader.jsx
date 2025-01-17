@@ -21,10 +21,10 @@ function FeedHeader() {
           backgroundColor: "transparent",
           width: {
             xs: "9.5vw",
-            sm: "15vw"
+            sm: "14vw"
 
           },
-          height: "10vh",
+          height: "6vh",
           borderRadius: "5px",
           overflow: "hidden",
           position: "absolute",
@@ -38,7 +38,8 @@ function FeedHeader() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          cursor: "pointer"
+          cursor: "pointer",
+          marginTop:'6px'
         }}>
         <img src='/logo.png' alt='profile'
           style={{

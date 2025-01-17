@@ -19,6 +19,7 @@ function App() {
       <Sidebar />
       <ProfilePic />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/chats" element={<Messages />} />
         <Route path="/Analytics" element={<Analytics />} />

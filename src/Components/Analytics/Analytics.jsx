@@ -1,10 +1,11 @@
 import { Container } from '@mui/material'
 import React from 'react'
-
+import { useMode } from '../../Providers/ModeContext';
 function Analytics() {
+  const { mode } = useMode();
   return (
     <Container>
-      Analytics
+      { mode } Analytics
     </Container>
   )
 }

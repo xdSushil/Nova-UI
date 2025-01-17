@@ -1,10 +1,11 @@
 import { Container } from '@mui/material'
 import React from 'react'
-
+import { useMode } from '../../Providers/ModeContext';
 function Network() {
+  const { mode } = useMode();
   return (
     <Container>
-      Networks
+      {mode} Networks
     </Container>
   )
 }
