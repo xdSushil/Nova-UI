@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Paper, Box } from '@mui/material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
@@ -10,13 +11,13 @@ import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 function Sidebar() {
     const [activeIcon, setActiveIcon] = useState(0.10); // To track which icon is active
     const [hoveredLabel, setHoveredLabel] = useState(null); // To track hovered icon
-
+    const navigate = useNavigate();
     const icons = [
         { id: 0.10, Icon: HomeOutlinedIcon, label: 'Home' },
         { id: 1.10, Icon: AssessmentOutlinedIcon, label: 'Analytics' },
         { id: 2.05, Icon: StorefrontOutlinedIcon, label: 'Store' },
         { id: 3.02, Icon: AddBusinessOutlinedIcon, label: 'Network' },
-        { id: 4, Icon: ChatBubbleOutlineOutlinedIcon, label: 'Messages' },
+        { id: 4, Icon: ChatBubbleOutlineOutlinedIcon, label: 'chats' },
         { id: 4.96, Icon: SettingsOutlinedIcon, label: 'Settings' },
     ];
 
@@ -85,6 +86,7 @@ function Sidebar() {
                     }}
                     onMouseEnter={() => setHoveredLabel(label)}
                     onMouseLeave={() => setHoveredLabel(null)}
+                    onClick = {()=>navigate("/"+label)}
                 >
                     <Icon
                         sx={{
