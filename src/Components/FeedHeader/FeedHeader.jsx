@@ -3,7 +3,9 @@ import SearchBar from "../../Components/search/search";
 import { Box, IconButton } from "@mui/material";
 import CampaignIcon from '@mui/icons-material/Campaign';
 import Switches from '../Switch/Switch';
+import { useNavigate } from 'react-router-dom';
 function FeedHeader() {
+  const navigate = useNavigate();
   return (
     <Box sx={{
       display: "flex",
@@ -40,7 +42,7 @@ function FeedHeader() {
           alignItems: "center",
           cursor: "pointer",
           marginTop:'6px'
-        }}>
+        }} onClick={()=>navigate("/Home")}>
         <img src='/logo.png' alt='profile'
           style={{
             width: '80%',
