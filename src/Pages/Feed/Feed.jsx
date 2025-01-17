@@ -1,10 +1,10 @@
 import React from "react";
-import Sidebar from "../../Components/Sidebar/Sidebar";
+// import Sidebar from "../../Components/Sidebar/Sidebar";
 
-import ProfilePic from "../../Components/profilePic/Profilepic";
+// import ProfilePic from "../../Components/profilePic/Profilepic";
 
 import "./Feed.css"
-import FeedHeader from "../../Components/FeedHeader/FeedHeader";
+// import FeedHeader from "../../Components/FeedHeader/FeedHeader";
 function Feed() {
 
 
@@ -12,9 +12,7 @@ function Feed() {
         <div>
             {/* header section with logo and search bar */}
             
-            <FeedHeader />
-            <Sidebar />
-            <ProfilePic />
+            Feed
 
 
         </div>
