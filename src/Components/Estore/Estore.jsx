@@ -1,12 +1,17 @@
-import { Container } from '@mui/material'
 import React from 'react'
 import { useMode } from '../../Providers/ModeContext';
+import VendorEstore from './VendorEstore';
+import ClientEstore from './ClientEstore';
 function Estore() {
   const { mode } = useMode()
   return (
-    <Container>
-      {mode} Estore 
-    </Container>
+    <div>
+      {mode === 'Vendor' ? (
+        <VendorEstore />
+      ) : (
+        <ClientEstore />
+      )}
+    </div>
   )
 }
 

@@ -37,7 +37,7 @@ function SearchBar() {
                 sx={{
                     boxShadow: "0px 4px 25px 5px #1a1919",
                     maxWidth: "600px",
-                    backgroundColor: "#1e1e1e",
+                    backgroundColor: "#242729",
                     borderRadius: "30px",
                     "& .MuiOutlinedInput-root": {
                         color: "#d1d1d1",

@@ -3,6 +3,7 @@
 }
 
 body {
-  background-color: #101010; /* Dark background */
+  background-color: #1a1919; /* Dark background */
   color: #d1d1d1;
+  overflow-x: hidden;
 }

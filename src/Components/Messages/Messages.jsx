@@ -1,12 +1,18 @@
-import { Container } from '@mui/material'
+
 import React from 'react'
 import { useMode } from '../../Providers/ModeContext';
+import User from '../../Pages/UserLayout/User';
+import { Container } from '@mui/material';
 function Messages() {
   const { mode } = useMode();
   return (
-    <Container>
+    <>
+      <User />
+      <Container>
+
       {mode} Chats
-    </Container>
+      </Container>
+    </>
   )
 }
 

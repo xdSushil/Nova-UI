@@ -1,12 +1,20 @@
 import { Container } from '@mui/material'
 import React from 'react'
 import { useMode } from '../../Providers/ModeContext';
+import UserLayout from "../../Pages/UserLayout/User"
+import VendorNetwork from './VendorNetwork';
+import ClientNetwork from './ClientNetwork';
 function Network() {
   const { mode } = useMode();
   return (
-    <Container>
-      {mode} Networks
-    </Container>
+    <>
+      <UserLayout />
+      {mode==="Vendor"?(
+        <VendorNetwork />
+      ):(
+        <ClientNetwork />
+      )}
+    </>
   )
 }
 

@@ -9,10 +9,19 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 
 function Sidebar() {
+    const [scrolled, setScrolled] = useState(false);
     const [activeIcon, setActiveIcon] = useState(0.10); // Default active icon
     const [hoveredLabel, setHoveredLabel] = useState(null); // To track hovered icon
     const navigate = useNavigate();
 
+    // Function to handle scroll events
+    const handleScroll = () => {
+        if (window.scrollY > 50) { // Set scroll threshold (e.g., 50px)
+            setScrolled(true);
+        } else {
+            setScrolled(false);
+        }
+    };
     const icons = [
         { id: 0.10, Icon: HomeOutlinedIcon, label: 'Home' },
         { id: 1.10, Icon: AssessmentOutlinedIcon, label: 'Analytics' },
@@ -30,6 +39,16 @@ function Sidebar() {
         }
     }, []);
 
+    // Add scroll event listener when the component mounts
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+
+        // Cleanup the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     // Update localStorage whenever activeIcon changes
     const handleIconClick = (id, label) => {
         setActiveIcon(id);
@@ -40,7 +59,8 @@ function Sidebar() {
     return (
         <Paper
             sx={{
-                backgroundColor: "#1a1919",
+                backgroundColor: scrolled ? "rgba(255, 255, 255, 0.0015)" : "#242729",
+                backdropFilter: scrolled ? "blur(20px)" : "none",
                 height: {
                     xs: "60vh",
                     sm: "80vh",
@@ -50,18 +70,19 @@ function Sidebar() {
                     sm: "4vw",
                 },
                 borderRadius: "13px",
-                position: "absolute",
-                left: {
-                    sm: "1.2%",
-                    xs: "3%",
-                },
+                position: "fixed", // Fixed to the screen
+
+                left: 20, // Span the full width
+
                 bottom: "9%",
-                boxShadow: "0px 4px 25px 5px #1a1919",
+                boxShadow: scrolled ? "0px 4px 25px 15px rgba(0, 0, 0, 0.035)" : "0px 4px 20px 3px #242729",
                 color: "#d1cdcd",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
+                zIndex: 1000, // Keep it on top of other content
+                transition: "backdrop-filter 0.3s ease, box-shadow 0.3s ease", // Smooth transition for the blur effect and shadow
                 gap: {
                     xs: 8,
                     sm: 10,
