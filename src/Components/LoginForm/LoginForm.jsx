@@ -214,7 +214,7 @@ const LoginForm = () => {
               borderRadius: 2,
               textTransform: "none",
             }}
-            onClick={()=>navigate("/Home")}
+            onClick={()=>navigate("/details")}
 
           >
             Log in

@@ -280,7 +280,7 @@ const RegisterForm = () => {
               borderRadius: 2,
               textTransform: "none",
             }}
-            onClick={()=>navigate("/Home")}
+            onClick={()=>navigate("/login")}
 
           >
             Register
