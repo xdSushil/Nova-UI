@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Box,
   Grid,
@@ -13,10 +13,13 @@ import {
 import { Visibility, VisibilityOff, Lock, Email, Person } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import Axios for API calls
+import { AuthContext } from "../../Providers/UserContext";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -35,11 +38,17 @@ const RegisterForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { name, email, password, confirmPassword } = formData;
+  const handleCloseNotification = () => {
+    setNotification({ ...notification, open: false });
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { name, email, password, confirmPassword } = formData;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Client-side validation
     if (!name || !email || !password || !confirmPassword) {
       return setNotification({
         open: true,
@@ -47,7 +56,6 @@ const RegisterForm = () => {
         severity: "error",
       });
     }
-
     if (!emailRegex.test(email)) {
       return setNotification({
         open: true,
@@ -55,7 +63,6 @@ const RegisterForm = () => {
         severity: "error",
       });
     }
-
     if (password !== confirmPassword) {
       return setNotification({
         open: true,
@@ -64,22 +71,48 @@ const RegisterForm = () => {
       });
     }
 
-    setNotification({
-      open: true,
-      message: "Registration successful!",
-      severity: "success",
-    });
+    try {
+      // Send a POST request to the backend API
+      const response = await axios.post("http://localhost:4000/api/users", {
+        companyName: name, // Assuming 'name' corresponds to 'companyName' in the backend
+        email,
+        password,
+      });
+      const { token, user } = response.data;
 
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
-  };
+      localStorage.setItem("token", token);
+      login(user);
+      // Handle successful registration
+      setNotification({
+        open: true,
+        message: response.data.message || "Registration successful!",
+        severity: "success",
+      });
 
-  const handleCloseNotification = () => {
-    setNotification({ ...notification, open: false });
+      // Clear the form
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+
+      // Redirect to the login page after a short delay
+      setTimeout(() => {
+        navigate("/details");
+      }, 2000);
+    } catch (error) {
+      // Handle errors from the backend
+      let errorMessage = "An error occurred while registering.";
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+      setNotification({
+        open: true,
+        message: errorMessage,
+        severity: "error",
+      });
+    }
   };
 
   return (
@@ -124,7 +157,7 @@ const RegisterForm = () => {
             color: "#7a7777",
           }}
         >
-          Sign In
+          Sign Up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
           <Grid container spacing={2}>
@@ -132,7 +165,7 @@ const RegisterForm = () => {
               <TextField
                 fullWidth
                 required
-                label="Name"
+                label="Company Name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
@@ -280,8 +313,6 @@ const RegisterForm = () => {
               borderRadius: 2,
               textTransform: "none",
             }}
-            onClick={()=>navigate("/login")}
-
           >
             Register
           </Button>

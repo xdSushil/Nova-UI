@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useContext } from "react";
 import {
   Box,
   Grid,
@@ -13,15 +13,16 @@ import {
 import { Visibility, VisibilityOff, Lock, Email } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import Axios for API calls
+import { AuthContext } from "../../Providers/UserContext";
 
 const LoginForm = () => {
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
   const [notification, setNotification] = useState({
     open: false,
@@ -35,19 +36,24 @@ const LoginForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { name, email, password, confirmPassword } = formData;
+  const handleCloseNotification = () => {
+    setNotification({ ...notification, open: false });
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { email, password } = formData;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!name || !email || !password || !confirmPassword) {
+
+    // Client-side validation
+    if (!email || !password) {
       return setNotification({
         open: true,
         message: "All fields are required!",
         severity: "error",
       });
     }
-
     if (!emailRegex.test(email)) {
       return setNotification({
         open: true,
@@ -56,30 +62,45 @@ const LoginForm = () => {
       });
     }
 
-    if (password !== confirmPassword) {
-      return setNotification({
+    try {
+      // Send a POST request to the backend API
+      const response = await axios.post("http://localhost:4000/api/users/login", {
+        email,
+        password,
+      });
+      const { token, user } = response.data;
+
+      localStorage.setItem("token", token);
+      login(user);
+      // Handle successful login
+      setNotification({
         open: true,
-        message: "Passwords do not match!",
+        message: response.data.message || "Login successful!",
+        severity: "success",
+      });
+
+      // Clear the form
+      setFormData({
+        email: "",
+        password: "",
+      });
+
+      // Redirect to the dashboard or home page after a short delay
+      setTimeout(() => {
+        navigate("/home"); // Replace "/details" with your desired route
+      }, 2000);
+    } catch (error) {
+      // Handle errors from the backend
+      let errorMessage = "An error occurred while logging in.";
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+      setNotification({
+        open: true,
+        message: errorMessage,
         severity: "error",
       });
     }
-
-    setNotification({
-      open: true,
-      message: "Registration successful!",
-      severity: "success",
-    });
-
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
-  };
-
-  const handleCloseNotification = () => {
-    setNotification({ ...notification, open: false });
   };
 
   return (
@@ -128,7 +149,6 @@ const LoginForm = () => {
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
           <Grid container spacing={2}>
-            
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -197,7 +217,6 @@ const LoginForm = () => {
                 }}
               />
             </Grid>
-            
           </Grid>
           <Button
             type="submit"
@@ -214,10 +233,8 @@ const LoginForm = () => {
               borderRadius: 2,
               textTransform: "none",
             }}
-            onClick={()=>navigate("/details")}
-
           >
-            Log in
+            Log In
           </Button>
         </Box>
       </motion.div>

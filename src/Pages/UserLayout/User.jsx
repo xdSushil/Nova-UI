@@ -9,7 +9,7 @@ function User() {
     <Box>
       <FeedHeader />
       <Sidebar />
-      <ProfilePic />
+      {/* <ProfilePic /> */}
     </Box>
   );
 }
