@@ -12,7 +12,7 @@ import Register from "./Pages/RegisterPage/RegisterPage";
 import LoginPage from "./Pages/LoginPage/LoginPage";
 import InfoPage from "./Pages/InfoPage/InfoPage";
 import Loading from "./Components/loading/loading"; // Assuming you have a Loading component
-
+import HomePage from './Pages/HomePage/HomePage.jsx';
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,9 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Register />} />
+        <Route path="/" element={<HomePage />} /> {/* This makes HomePage the default page */}
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/chats" element={<Messages />} />
         <Route path="/Analytics" element={<Analytics />} />

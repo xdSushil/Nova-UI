@@ -1,0 +1,135 @@
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: black;
+    color: cyan;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    gap: 15px;
+    z-index: 100;
+    /* Makes sure buttons stay clickable */
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+}
+
+.planet {
+    z-index: 1;
+}
+
+.register-btn {
+    background-color: cyan;
+    color: black;
+}
+
+.login-btn {
+    background-color: transparent;
+    color: cyan;
+    border: 2px solid cyan;
+}
+
+.register-btn:hover {
+    background-color: black;
+    color: cyan;
+    border: 2px solid cyan;
+}
+
+.login-btn:hover {
+    background-color: cyan;
+    color: black;
+}
+
+/* Planets Section */
+.planets-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+/* Vendor Planet - Cyan */
+.vendor-planet {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #5deeff, cyan);
+    box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.7);
+    position: absolute;
+    left: 10%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Client Planet - Red */
+.client-planet {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff7a7a, red);
+    box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.7);
+    position: absolute;
+    right: 10%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Saturn-like Rings */
+.planet-ring {
+    position: absolute;
+    width: 160px;
+    height: 50px;
+    border-radius: 50%;
+    transform: rotate(15deg);
+    z-index: -1;
+}
+
+.vendor-ring {
+    background: linear-gradient(to right, transparent, cyan, transparent);
+    box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.5);
+}
+
+.client-ring {
+    background: linear-gradient(to right, transparent, red, transparent);
+    box-shadow: 0px 0px 10px rgba(255, 0, 0, 0.5);
+}
+
+/* When planets move to center */
+.planet.active {
+    width: 200px;
+    height: 200px;
+    left: 50% !important;
+    transform: translateX(-50%);
+}
+
+/* Planet Info */
+.planet-info {
+    position: absolute;
+    top: 120%;
+    width: 250px;
+    text-align: center;
+    color: white;
+}
