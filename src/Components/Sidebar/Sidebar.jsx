@@ -419,7 +419,7 @@ function Sidebar() {
                     }}
                     onClick={() => handleIconClick(-1,"Profile")}
                 >
-                    <Typography sx={{ fontSize: "14px", color: "#d1cdcd" }}>My Profile</Typography>
+                    <Typography sx={{ fontSize: "14px", color: "#d1cdcd" }}>Profile</Typography>
                 </Box>
 
                 {/* Manage Inventory Option */}
