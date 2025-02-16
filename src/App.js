@@ -12,6 +12,7 @@ import Register from "./Pages/RegisterPage/RegisterPage";
 import LoginPage from "./Pages/LoginPage/LoginPage";
 import InfoPage from "./Pages/InfoPage/InfoPage";
 import Loading from "./Components/loading/loading"; // Assuming you have a Loading component
+import MyProfile from "./Components/MyProfile/MyProfile";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,7 @@ function App() {
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/details" element={<InfoPage />} />
+        <Route path="/Profile" element={<MyProfile />} />
       </Routes>
     </div>
   );

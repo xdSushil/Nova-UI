@@ -405,43 +405,22 @@ function Sidebar() {
                     },
                 }}
             >
-                {/* Profile Picture and Edit Profile */}
+                {/* Manage Inventory Option */}
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        marginBottom: "10px",
+                        cursor: "pointer",
+                        padding: "8px",
+                        borderRadius: "8px",
+                        "&:hover": {
+                            backgroundColor: "rgba(49, 163, 163, 0.1)",
+                        },
                     }}
+                    onClick={() => handleIconClick(-1,"Profile")}
                 >
-                    <Avatar
-                        src="https://cdn-icons-png.flaticon.com/512/9408/9408626.png" // Lightning bolt clipart for profile picture
-                        sx={{
-                            width: 40,
-                            height: 40,
-                            bgcolor: "#31a3a3", // Match the original blue
-                            fontSize: "14px",
-                            color: "#fff",
-                            marginRight: "10px",
-                            borderRadius: "8px", // Rounded square shape
-                        }}
-                    >
-                        AB
-                    </Avatar>
-                    <Box>
-                        <Typography
-                            sx={{
-                                fontSize: "14px",
-                                fontWeight: "bold",
-                                color: "#d1cdcd",
-                            }}
-                        >
-                            Edit Profile
-                        </Typography>
-                    </Box>
+                    <Typography sx={{ fontSize: "14px", color: "#d1cdcd" }}>My Profile</Typography>
                 </Box>
-
-                {/* Divider */}
-                <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.1)", marginBottom: "10px" }} />
 
                 {/* Manage Inventory Option */}
                 <Box
