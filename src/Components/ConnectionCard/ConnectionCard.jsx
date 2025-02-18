@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Card, CardContent, Typography } from "@mui/material";
-import { Avatar } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Avatar,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { AuthContext } from "../../Providers/UserContext"; // Adjust the path as needed
@@ -8,12 +14,16 @@ import BusinessIcon from "@mui/icons-material/Business";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CategoryIcon from "@mui/icons-material/Category";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
   const [switchState, setSwitchState] = useState(connectionStatus); // states: 'stranger', 'pending', 'connected', 'declined'
   const { user } = useContext(AuthContext);
+
+  // Snackbar state
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   const handleSwitchClick = () => {
     if (switchState === "stranger") {
       const sendConnectionRequest = async () => {
@@ -27,11 +37,15 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
             }
           );
           setSwitchState("pending");
-          toast.success("Connection request sent successfully!");
+          setSnackbarMessage("Connection request sent successfully!");
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
         } catch (error) {
           console.error("Error sending connection request:", error);
           setSwitchState("stranger");
-          toast.error("Failed to send connection request. Try again.");
+          setSnackbarMessage("Failed to send connection request. Try again.");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
         }
       };
       sendConnectionRequest();
@@ -57,28 +71,31 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
     }
   };
 
+  // Snackbar close handler
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
   return (
     <>
-      {/* Toast Container */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        toastStyle={{
-          backgroundColor: "#1a1d21",
-          color: "#d1d5db",
-          border: "1px solid #2a2e35",
-          borderRadius: "8px",
-        }}
-        progressStyle={{ backgroundColor: "#0077b6" }}
-      />
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
       <Card
         sx={{
@@ -91,6 +108,7 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
           padding: 3,
           overflow: "visible",
           position: "relative",
+          marginBottom:"25px"
         }}
       >
         {/* Profile Picture in the top-right corner */}
@@ -108,7 +126,6 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
             zIndex: 10,
           }}
         />
-
         <CardContent sx={{ width: "100%" }}>
           {/* Company Name on the left */}
           <Typography
@@ -123,7 +140,6 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
           >
             {userData?.companyName || "Unknown Company"}
           </Typography>
-
           {/* Address just to the right of the company name */}
           <Typography
             sx={{
@@ -136,7 +152,6 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
           >
             {userData?.address || "No address provided"}
           </Typography>
-
           {/* Industry on the far right */}
           <Typography
             sx={{
@@ -148,7 +163,6 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
           >
             Industry: {userData?.companyIndustry || "Not specified"}
           </Typography>
-
           {/* Product Types below the description */}
           <Typography
             sx={{
@@ -162,7 +176,6 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
             Supplies: {userData?.productTypes || "Not specified"}
           </Typography>
         </CardContent>
-
         {/* Switch in the bottom-right corner */}
         <div className="absolute bottom-4 right-4">
           <label className="mb-2 text-sm font-semibold block text-center">

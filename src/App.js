@@ -12,7 +12,19 @@ import Register from "./Pages/RegisterPage/RegisterPage";
 import LoginPage from "./Pages/LoginPage/LoginPage";
 import InfoPage from "./Pages/InfoPage/InfoPage";
 import Loading from "./Components/loading/loading"; // Assuming you have a Loading component
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import MyProfile from "./Components/MyProfile/MyProfile";
+=======
+import Landing from "./Pages/Landing/Landing";
+>>>>>>> Stashed changes
+=======
+import Landing from "./Pages/Landing/Landing";
+>>>>>>> Stashed changes
+=======
+import Landing from "./Pages/Landing/Landing";
+>>>>>>> Stashed changes
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -33,8 +45,8 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/Home" element={<Home />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/user-home" element={<Home />} />
         <Route path="/chats" element={<Messages />} />
         <Route path="/Analytics" element={<Analytics />} />
         <Route path="/Store" element={<Estore />} />
