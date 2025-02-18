@@ -1,0 +1,24 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  
+  .landing-page {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: url("/public/background/background.jpeg") no-repeat center center fixed;
+    background-size: cover;
+  }
+  
+  .centered-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+  }

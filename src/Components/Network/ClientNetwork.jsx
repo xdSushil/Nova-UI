@@ -35,16 +35,21 @@ function ClientNetwork() {
       const fetchConnectionStatus = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:4000/api/connections/all`
+            `http://localhost:4000/api/connections/sent/${user.id}`
           );
-          setConnections(response.data);
+          if(response.data.length>0){
+            setConnections(response.data);
+          }
+          else{
+            setConnections([]);
+          }
         } catch (error) {
           console.error("Error fetching users:", error);
           setConnections([]);
         }
       };
       fetchConnectionStatus();
-    }, [user.id]);
+    }, [user?.id]);
   
     if (loading) {
       return (
