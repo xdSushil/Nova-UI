@@ -15,21 +15,23 @@ import CategoryIcon from "@mui/icons-material/Category";
 import InventoryIcon from "@mui/icons-material/Inventory";
 
 const RequestCard = ({ userData, connectionId }) => {
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State to control Snackbar visibility
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // Message to display in Snackbar
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Severity of Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [isAccepted, setIsAccepted] = useState(false); // State to track acceptance
+  const [isDeclined, setIsDeclined] = useState(false); // State to track decline
 
-  // Handle Accept Request
   const handleAccept = async () => {
     try {
-      const response = await axios.put(`http://localhost:4000/api/connections/accept/${connectionId}`);
-      
-      // Check if the response contains the expected success message
+      const response = await axios.put(
+        `http://localhost:4000/api/connections/accept/${connectionId}`
+      );
+
       if (response.data.message === "Connection accepted successfully.") {
         setSnackbarMessage(response.data.message);
         setSnackbarSeverity("success");
+        setIsAccepted(true); // Trigger animation for acceptance
       } else {
-        // Handle unexpected response
         setSnackbarMessage("Unexpected response from server. Please try again.");
         setSnackbarSeverity("error");
       }
@@ -38,21 +40,21 @@ const RequestCard = ({ userData, connectionId }) => {
       setSnackbarMessage("Failed to accept connection. Please try again.");
       setSnackbarSeverity("error");
     } finally {
-      setSnackbarOpen(true); // Show Snackbar
+      setSnackbarOpen(true);
     }
   };
-  
-  // Handle Decline Request
+
   const handleDecline = async () => {
     try {
-      const response = await axios.delete(`http://localhost:4000/api/connections/remove/${connectionId}`);
-      
-      // Check if the response contains the expected success message
+      const response = await axios.delete(
+        `http://localhost:4000/api/connections/remove/${connectionId}`
+      );
+
       if (response.data.message === "Connection removed successfully.") {
         setSnackbarMessage(response.data.message);
         setSnackbarSeverity("success");
+        setIsDeclined(true); // Trigger animation for decline
       } else {
-        // Handle unexpected response
         setSnackbarMessage("Unexpected response from server. Please try again.");
         setSnackbarSeverity("error");
       }
@@ -61,11 +63,10 @@ const RequestCard = ({ userData, connectionId }) => {
       setSnackbarMessage("Failed to decline connection. Please try again.");
       setSnackbarSeverity("error");
     } finally {
-      setSnackbarOpen(true); // Show Snackbar
+      setSnackbarOpen(true);
     }
   };
 
-  // Close Snackbar
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -121,7 +122,6 @@ const RequestCard = ({ userData, connectionId }) => {
             zIndex: 10,
           }}
         />
-
         <CardContent sx={{ width: "100%" }}>
           {/* Company Name on the left */}
           <Typography
@@ -133,10 +133,10 @@ const RequestCard = ({ userData, connectionId }) => {
               fontWeight: "600",
               color: "gray.300",
             }}
-          >
+          > 
+            <BusinessIcon />
             {userData?.companyName || "Unknown Company"}
           </Typography>
-
           {/* Address just to the right of the company name */}
           <Typography
             sx={{
@@ -147,9 +147,9 @@ const RequestCard = ({ userData, connectionId }) => {
               color: "gray.300",
             }}
           >
+            <LocationOnIcon />
             {userData?.address || "No address provided"}
           </Typography>
-
           {/* Industry on the far right */}
           <Typography
             sx={{
@@ -158,10 +158,10 @@ const RequestCard = ({ userData, connectionId }) => {
               fontSize: "0.875rem",
               color: "gray.300",
             }}
-          >
+          > 
+            <InventoryIcon />
             Industry: {userData?.companyIndustry || "Not specified"}
           </Typography>
-
           {/* Product Types below the description */}
           <Typography
             sx={{
@@ -171,37 +171,78 @@ const RequestCard = ({ userData, connectionId }) => {
               fontSize: "0.875rem",
               color: "gray.300",
             }}
-          >
+          > 
+            <CategoryIcon />
             Supplies: {userData?.productTypes || "Not specified"}
           </Typography>
         </CardContent>
 
-        {/* Buttons in the bottom-right corner */}
+        {/* Yin-Yang Buttons */}
         <div
           style={{
             position: "absolute",
             bottom: 16,
             right: 16,
             display: "flex",
-            gap: 8,
+            gap: isAccepted ? 0 : 8, // Join the symbols when accepted
+            transition: "gap 0.5s ease-in-out",
           }}
         >
-          <Button
-            variant="contained"
-            color="success"
+          {/* Yin Symbol */}
+          <div
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              backgroundColor: "green",
+              position: "relative",
+              cursor: "pointer",
+              opacity: isDeclined ? 0 : 1, // Fade out on decline
+              transition: "opacity 0.5s ease-in-out",
+            }}
             onClick={handleAccept}
-            sx={{ textTransform: "none" }}
           >
-            Accept
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                backgroundColor: "white",
+              }}
+            ></div>
+          </div>
+
+          {/* Yang Symbol */}
+          <div
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              backgroundColor: "red",
+              position: "relative",
+              cursor: "pointer",
+              opacity: isDeclined ? 0 : 1, // Fade out on decline
+              transition: "opacity 0.5s ease-in-out",
+            }}
             onClick={handleDecline}
-            sx={{ textTransform: "none" }}
           >
-            Decline
-          </Button>
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                backgroundColor: "black",
+              }}
+            ></div>
+          </div>
         </div>
       </Card>
     </>
