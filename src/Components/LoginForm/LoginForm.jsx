@@ -87,7 +87,7 @@ const LoginForm = () => {
 
       // Redirect to the dashboard or home page after a short delay
       setTimeout(() => {
-        navigate("/home"); // Replace "/details" with your desired route
+        navigate("/user-home"); // Replace "/details" with your desired route
       }, 2000);
     } catch (error) {
       // Handle errors from the backend

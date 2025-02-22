@@ -11,6 +11,7 @@ import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import { motion } from "framer-motion";
 
 function Sidebar() {
     const [scrolled, setScrolled] = useState(false);
@@ -99,7 +100,7 @@ function Sidebar() {
     const handleSignOut = () => {
         logout(); // Call the logout function to clear user session
         navigate("/login"); // Navigate to the login page
-      };
+    };
 
     const open = Boolean(anchorEl);
     const novaOpen = Boolean(novaAnchorEl);
@@ -118,8 +119,8 @@ function Sidebar() {
     return (
         <Paper
             sx={{
-                backgroundColor: scrolled ? "rgba(255, 255, 255, 0.05)" : "#2d3033", // Sidebar background
-                backdropFilter: scrolled ? "blur(20px)" : "none",
+                backgroundColor: scrolled ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 0.05)", // Sidebar background #2d3033
+                backdropFilter: scrolled ? "blur(20px)" : "blur(20px)",
                 height: "80vh", // Increased height to include user profile
                 width: {
                     xs: "11vw", // Slightly narrower width
@@ -129,13 +130,13 @@ function Sidebar() {
                 position: "fixed", // Fixed to the screen
                 left: 20, // Span the full width
                 bottom: "5%", // Adjusted position
-                boxShadow: scrolled ? "0px 4px 25px 15px rgba(0, 0, 0, 0.035)" : "0px 4px 20px 3px #242729",
+                boxShadow: scrolled ? "0px 4px 25px 15px rgba(0, 0, 0, 0.035)" : "0px 4px 25px 15px rgba(0, 0, 0, 0.035)", //0px 4px 20px 3px #242729
                 color: "#d1cdcd",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "flex-start", // Align items to the start
                 justifyContent: "space-between", // Space between main content and profile section
-                zIndex: 1000, // Keep it on top of other content
+                zIndex: 1, // Keep it on top of other content
                 transition: "backdrop-filter 0.3s ease, box-shadow 0.3s ease", // Smooth transition for the blur effect and shadow
                 gap: "10px", // Consistent gap between sections
                 padding: "10px", // Reduced padding
@@ -147,42 +148,67 @@ function Sidebar() {
                     <Box
                         key={id}
                         sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            cursor: "pointer",
-                            width: "100%",
-                            padding: "6px 10px", // Slightly increased padding for bigger items
+                            position: "relative",
+                            overflow: "hidden", // Ensures the fill effect stays within bounds
                             borderRadius: "8px",
-                            backgroundColor: activeIcon === id ? '#31a3a3' : "transparent", // Original blue
-                            "&:hover": {
-                                backgroundColor: activeIcon === id ? '#31a3a3' : "rgba(49, 163, 163, 0.1)", // Hover effect matches the new color
-                            },
                             marginBottom: "10px", // Spacing between items
                         }}
-                        onClick={() => handleIconClick(id, label)}
                     >
-                        <Icon
-                            sx={{
-                                fontSize: {
-                                    xs: "19.2px", // Increased icon size by ~20%
-                                    sm: "21.6px",
-                                },
-                                color: activeIcon === id ? "#000000" : "#d1cdcd", // Black for selected icon
-                                marginRight: "10px", // Slightly more space between icon and text
+                        {/* Background Fill Animation */}
+                        <motion.div
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                height: "100%",
+                                width: "100%",
+                                backgroundColor: "#31a3a3",
+                                zIndex: 0,
+                                originX: 0, // Ensures scaling starts from the left
                             }}
+                            initial={{ scaleX: 0 }} // Starts with no width
+                            animate={{
+                                scaleX: activeIcon === id ? 1 : 0, // Expands to full width when active
+                            }}
+                            transition={{ duration: 0.8, ease: "easeInOut" }}
                         />
-                        <Typography
-                            sx={{
-                                fontSize: {
-                                    xs: "12px", // Increased font size by ~20%
-                                    sm: "14px",
-                                },
-                                color: activeIcon === id ? "#000000" : "#d1cdcd", // Black for selected text
-                                fontWeight: activeIcon === id ? "bold" : "normal",
+
+                        {/* Content */}
+                        <motion.div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                cursor: "pointer",
+                                padding: "6px 10px",
+                                borderRadius: "8px",
+                                position: "relative",
+                                zIndex: 1, // Ensures content is above the background fill
                             }}
+                            onClick={() => handleIconClick(id, label)}
                         >
-                            {label}
-                        </Typography>
+                            <Icon
+                                sx={{
+                                    fontSize: {
+                                        xs: "19.2px", // Increased icon size by ~20%
+                                        sm: "21.6px",
+                                    },
+                                    color: activeIcon === id ? "#e6e1e1" : "#d1cdcd", // White for selected icon
+                                    marginRight: "10px", // Slightly more space between icon and text
+                                }}
+                            />
+                            <Typography
+                                sx={{
+                                    fontSize: {
+                                        xs: "12px", // Increased font size by ~20%
+                                        sm: "14px",
+                                    },
+                                    color: activeIcon === id ? "#e6e1e1" : "#d1cdcd", // White for selected text
+                                    fontWeight: activeIcon === id ? "bold" : "normal",
+                                }}
+                            >
+                                {label}
+                            </Typography>
+                        </motion.div>
                     </Box>
                 ))}
             </Box>
@@ -319,7 +345,7 @@ function Sidebar() {
                                 marginRight: "-6px", // Overlap the smaller icon
                             }}
                         >
-                            
+
                         </Typography>
                         <Typography
                             sx={{
@@ -376,7 +402,7 @@ function Sidebar() {
                             fontWeight: "bold",
                         }}
                     >
-                        {user.companyName} 
+                        {user.companyName}
                     </Typography>
                 </Box>
             </Box>
@@ -417,7 +443,7 @@ function Sidebar() {
                             backgroundColor: "rgba(49, 163, 163, 0.1)",
                         },
                     }}
-                    onClick={() => handleIconClick(-1,"Profile")}
+                    onClick={() => handleIconClick(-1, "Profile")}
                 >
                     <Typography sx={{ fontSize: "14px", color: "#d1cdcd" }}>Profile</Typography>
                 </Box>
@@ -475,107 +501,107 @@ function Sidebar() {
             </Popover>
 
             {/* NOVA Popover Menu */}
-{/* NOVA Popover Menu */}
-<Popover
-    id={novaPopoverId}
-    open={novaOpen}
-    anchorEl={novaAnchorEl}
-    onClose={handleNovaClose}
-    anchorOrigin={{
-        vertical: 'center',   // Align vertically at the center of the button
-        horizontal: 'right',  // Anchor the popover to the right edge of the button
-    }}
-    transformOrigin={{
-        vertical: 'center',   // Align vertically at the center of the popover
-        horizontal: 'left',   // Position the popover to the right of the button
-    }}
-    sx={{
-        '& .MuiPaper-root': {
-            backgroundColor: "#2d3033", // Dark background
-            color: "#d1cdcd",          // Light text
-            borderRadius: "10px",
-            padding: "10px",
-            width: "200px",            // Fixed width for consistency
-        },
-    }}
->
-    {/* Render NOVA Options */}
-    {novaOptions.map((option, index) => (
-        <Box
-            key={index}
-            sx={{
-                display: "flex",
-                flexDirection: "column", // Stack items vertically
-                alignItems: "flex-start", // Align items to the start
-                padding: "8px",
-                borderRadius: "8px",
-                marginBottom: index < novaOptions.length - 1 ? "8px" : 0, // Add spacing between items
-                border: option.name === "NOVA Free" ? "2px solid #31a3a3" : "none", // Blue border for "NOVA Free"
-                "&:hover": {
-                    backgroundColor: "rgba(49, 163, 163, 0.1)", // Hover effect
-                },
-            }}
-            onClick={() => console.log(`${option.name} selected`)}
-        >
-            {/* Option Name */}
-            <Typography
+            {/* NOVA Popover Menu */}
+            <Popover
+                id={novaPopoverId}
+                open={novaOpen}
+                anchorEl={novaAnchorEl}
+                onClose={handleNovaClose}
+                anchorOrigin={{
+                    vertical: 'center',   // Align vertically at the center of the button
+                    horizontal: 'right',  // Anchor the popover to the right edge of the button
+                }}
+                transformOrigin={{
+                    vertical: 'center',   // Align vertically at the center of the popover
+                    horizontal: 'left',   // Position the popover to the right of the button
+                }}
                 sx={{
-                    fontSize: "14px",
-                    color: "#d1cdcd",
-                    fontWeight: option.name === "NOVA Free" ? "bold" : "normal",
+                    '& .MuiPaper-root': {
+                        backgroundColor: "#2d3033", // Dark background
+                        color: "#d1cdcd",          // Light text
+                        borderRadius: "10px",
+                        padding: "10px",
+                        width: "200px",            // Fixed width for consistency
+                    },
                 }}
             >
-                {option.name}
-            </Typography>
+                {/* Render NOVA Options */}
+                {novaOptions.map((option, index) => (
+                    <Box
+                        key={index}
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column", // Stack items vertically
+                            alignItems: "flex-start", // Align items to the start
+                            padding: "8px",
+                            borderRadius: "8px",
+                            marginBottom: index < novaOptions.length - 1 ? "8px" : 0, // Add spacing between items
+                            border: option.name === "NOVA Free" ? "2px solid #31a3a3" : "none", // Blue border for "NOVA Free"
+                            "&:hover": {
+                                backgroundColor: "rgba(49, 163, 163, 0.1)", // Hover effect
+                            },
+                        }}
+                        onClick={() => console.log(`${option.name} selected`)}
+                    >
+                        {/* Option Name */}
+                        <Typography
+                            sx={{
+                                fontSize: "14px",
+                                color: "#d1cdcd",
+                                fontWeight: option.name === "NOVA Free" ? "bold" : "normal",
+                            }}
+                        >
+                            {option.name}
+                        </Typography>
 
-            {/* Rate */}
-            <Typography
-                sx={{
-                    fontSize: "12px",
-                    color: "#FFD700",
-                    marginTop: "2px",
-                }}
-            >
-                {option.rate}
-            </Typography>
+                        {/* Rate */}
+                        <Typography
+                            sx={{
+                                fontSize: "12px",
+                                color: "#FFD700",
+                                marginTop: "2px",
+                            }}
+                        >
+                            {option.rate}
+                        </Typography>
 
-            {/* Micro-text for "Current Plan" */}
-            {option.name === "NOVA Free" && (
-                <Typography
+                        {/* Micro-text for "Current Plan" */}
+                        {option.name === "NOVA Free" && (
+                            <Typography
+                                sx={{
+                                    fontSize: "10px", // Micro-text size
+                                    color: "#31a3a3", // Match the blue border color
+                                    marginTop: "4px",
+                                }}
+                            >
+                                Current Plan
+                            </Typography>
+                        )}
+                    </Box>
+                ))}
+
+                {/* Divider */}
+                <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.1)", margin: "8px 0" }} />
+
+                {/* Learn More About Subscriptions Option */}
+                <Box
                     sx={{
-                        fontSize: "10px", // Micro-text size
-                        color: "#31a3a3", // Match the blue border color
-                        marginTop: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        padding: "8px",
+                        borderRadius: "8px",
+                        "&:hover": {
+                            backgroundColor: "rgba(49, 163, 163, 0.1)",
+                        },
                     }}
+                    onClick={() => console.log("Learn more about subscriptions clicked")}
                 >
-                    Current Plan
-                </Typography>
-            )}
-        </Box>
-    ))}
-
-    {/* Divider */}
-    <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.1)", margin: "8px 0" }} />
-
-    {/* Learn More About Subscriptions Option */}
-    <Box
-        sx={{
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            padding: "8px",
-            borderRadius: "8px",
-            "&:hover": {
-                backgroundColor: "rgba(49, 163, 163, 0.1)",
-            },
-        }}
-        onClick={() => console.log("Learn more about subscriptions clicked")}
-    >
-        <Typography sx={{ fontSize: "14px", color: "#64B5F6", fontWeight: "bold" }}>
-            Learn more about subscriptions
-        </Typography>
-    </Box>
-</Popover>
+                    <Typography sx={{ fontSize: "14px", color: "#64B5F6", fontWeight: "bold" }}>
+                        Learn more about subscriptions
+                    </Typography>
+                </Box>
+            </Popover>
         </Paper>
     );
 }

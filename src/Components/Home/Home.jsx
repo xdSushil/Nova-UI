@@ -2,7 +2,7 @@ import React from 'react'
 import { useMode } from '../../Providers/ModeContext';
 import VendorHome from './VendorHome';
 import ClientHome from './ClientHome';
-import User from '../../Pages/UserLayout/User';
+import UserLayout from '../../Pages/UserLayout/User';
 function Home() {
   const { mode } = useMode();
   return (
@@ -13,7 +13,7 @@ function Home() {
     // </Container>
 
     <div>
-      <User />
+      <UserLayout />
       {mode === 'Vendor' ? (
         <VendorHome />
       ) : (

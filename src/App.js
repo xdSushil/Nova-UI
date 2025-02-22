@@ -13,7 +13,7 @@ import LoginPage from "./Pages/LoginPage/LoginPage";
 import InfoPage from "./Pages/InfoPage/InfoPage";
 import Loading from "./Components/loading/loading"; // Assuming you have a Loading component
 
-import MyProfile from "./Components/MyProfile/MyProfile";
+import Profile from "./Components/MyProfile/Profile";
 
 import Landing from "./Pages/Landing/Landing";
 
@@ -40,6 +40,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/user-home" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/chats" element={<Messages />} />
         <Route path="/Analytics" element={<Analytics />} />
         <Route path="/Store" element={<Estore />} />
@@ -48,7 +49,7 @@ function App() {
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/details" element={<InfoPage />} />
-        <Route path="/Profile" element={<MyProfile />} />
+        <Route path="/Profile" element={<Profile />} />
       </Routes>
     </div>
   );
