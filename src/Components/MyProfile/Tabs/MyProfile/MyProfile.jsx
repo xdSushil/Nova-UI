@@ -7,7 +7,7 @@ import PersonalInfo from "./PersonalInfo/PersonalInfo";
 import EmployeeSection from "./EmployeeSection/EmployeeSection";
 import ProductDetails from "./ProductDetails/ProductDetails";
 import { motion } from "framer-motion";
-
+import BackgroundAnimation from "./BackgroundAnimation/BackgroundAnimation";
 const MyProfile = () => {
   const { user } = useContext(AuthContext);
   const [currentUser, setUser] = useState(null);
@@ -59,49 +59,19 @@ const MyProfile = () => {
           zIndex: -1,
         }}
       >
-        {/* Large Circle */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.1 }}
-          transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
-          style={{
-            position: "absolute",
-            top: "10%",
-            left: "-5%",
-            width: "50%",
-            height: "50%",
-            borderRadius: "50%",
-            background: "#31a3a3",
-            filter: "blur(30px)", // Add blur effect for a glow-like appearance
-          }}
-        />
-        {/* Small Circle */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.1 }}
-          transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-          style={{
-            position: "absolute",
-            bottom: "10%",
-            right: "5%",
-            width: "30%",
-            height: "30%",
-            borderRadius: "50%",
-            background: "#31a3a3",
-            filter: "blur(20px)", // Add blur effect for a glow-like appearance
-          }}
-        />
+        <BackgroundAnimation />
       </Box>
-      <Container sx={{ marginTop: "-10px", 
+      <Container sx={{
+        marginTop: "-10px",
         backgroundColor: "transaparent",
-        marginLeft:"0px",
-        display:"flex",
-        flexDirection:"column",
-        gap:0,
-        color:"#bdbbbb"
-        }}>
+        marginLeft: "0px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 0,
+        color: "#bdbbbb"
+      }}>
         {/* Profile Header */}
-        <ProfileHeader currentUser={currentUser}/>
+        <ProfileHeader currentUser={currentUser} />
 
         {/* Personal & Company Info */}
         <PersonalInfo currentUser={currentUser} />
