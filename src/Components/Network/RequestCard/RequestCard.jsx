@@ -1,25 +1,33 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Avatar,
-  Snackbar,
-  Alert,
-  Button,
-} from "@mui/material";
+import { Card, CardContent, Typography, Avatar, Snackbar, Alert, Box } from "@mui/material";
 import axios from "axios";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CategoryIcon from "@mui/icons-material/Category";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Accept Icon
+import CancelIcon from "@mui/icons-material/Cancel"; // Reject Icon
+import { keyframes } from "@emotion/react";
+
+// Keyframes for animations
+const spin = keyframes`
+  0% { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(360deg) scale(1.3); }
+`;
+
+const shake = keyframes`
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+`;
 
 const RequestCard = ({ userData, connectionId }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [isAccepted, setIsAccepted] = useState(false); // State to track acceptance
-  const [isDeclined, setIsDeclined] = useState(false); // State to track decline
+  const [isAccepted, setIsAccepted] = useState(false);
+  const [isDeclined, setIsDeclined] = useState(false);
 
   const handleAccept = async () => {
     try {
@@ -30,7 +38,8 @@ const RequestCard = ({ userData, connectionId }) => {
       if (response.data.message === "Connection accepted successfully.") {
         setSnackbarMessage(response.data.message);
         setSnackbarSeverity("success");
-        setIsAccepted(true); // Trigger animation for acceptance
+        setIsAccepted(true);
+        setIsDeclined(false);
       } else {
         setSnackbarMessage("Unexpected response from server. Please try again.");
         setSnackbarSeverity("error");
@@ -53,7 +62,8 @@ const RequestCard = ({ userData, connectionId }) => {
       if (response.data.message === "Connection removed successfully.") {
         setSnackbarMessage(response.data.message);
         setSnackbarSeverity("success");
-        setIsDeclined(true); // Trigger animation for decline
+        setIsDeclined(true);
+        setIsAccepted(false);
       } else {
         setSnackbarMessage("Unexpected response from server. Please try again.");
         setSnackbarSeverity("error");
@@ -83,11 +93,7 @@ const RequestCard = ({ userData, connectionId }) => {
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
@@ -107,7 +113,7 @@ const RequestCard = ({ userData, connectionId }) => {
           marginBottom: "25px",
         }}
       >
-        {/* Profile Picture in the top-right corner */}
+        {/* Profile Picture */}
         <Avatar
           alt="Profile Picture"
           src="/profilepic.png"
@@ -123,127 +129,90 @@ const RequestCard = ({ userData, connectionId }) => {
           }}
         />
         <CardContent sx={{ width: "100%" }}>
-          {/* Company Name on the left */}
-          <Typography
-            sx={{
-              position: "absolute",
-              top: "19.8%",
-              left: 120,
-              fontSize: "1.125rem",
-              fontWeight: "600",
-              color: "gray.300",
-            }}
-          > 
-            <BusinessIcon />
-            {userData?.companyName || "Unknown Company"}
+          <Typography sx={{ position: "absolute", top: "19.8%", left: 120, fontSize: "1.125rem", fontWeight: "600", color: "gray.300" }}>
+            <BusinessIcon /> {userData?.companyName || "Unknown Company"}
           </Typography>
-          {/* Address just to the right of the company name */}
-          <Typography
-            sx={{
-              position: "absolute",
-              left: "52%",
-              transform: "translateX(-50%)",
-              fontSize: "0.875rem",
-              color: "gray.300",
-            }}
-          >
-            <LocationOnIcon />
-            {userData?.address || "No address provided"}
+          <Typography sx={{ position: "absolute", left: "52%", transform: "translateX(-50%)", fontSize: "0.875rem", color: "gray.300" }}>
+            <LocationOnIcon /> {userData?.address || "No address provided"}
           </Typography>
-          {/* Industry on the far right */}
-          <Typography
-            sx={{
-              position: "absolute",
-              right: 20,
-              fontSize: "0.875rem",
-              color: "gray.300",
-            }}
-          > 
-            <InventoryIcon />
-            Industry: {userData?.companyIndustry || "Not specified"}
+          <Typography sx={{ position: "absolute", right: 20, fontSize: "0.875rem", color: "gray.300" }}>
+            <InventoryIcon /> Industry: {userData?.companyIndustry || "Not specified"}
           </Typography>
-          {/* Product Types below the description */}
-          <Typography
-            sx={{
-              position: "absolute",
-              bottom: "10%",
-              left: 120,
-              fontSize: "0.875rem",
-              color: "gray.300",
-            }}
-          > 
-            <CategoryIcon />
-            Supplies: {userData?.productTypes || "Not specified"}
+          <Typography sx={{ position: "absolute", bottom: "10%", left: 120, fontSize: "0.875rem", color: "gray.300" }}>
+            <CategoryIcon /> Supplies: {userData?.productTypes || "Not specified"}
           </Typography>
         </CardContent>
 
-        {/* Yin-Yang Buttons */}
-        <div
-          style={{
+        {/* Accept/Reject Buttons with Animation */}
+        <Box
+          sx={{
             position: "absolute",
             bottom: 16,
             right: 16,
             display: "flex",
-            gap: isAccepted ? 0 : 8, // Join the symbols when accepted
-            transition: "gap 0.5s ease-in-out",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {/* Yin Symbol */}
-          <div
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              backgroundColor: "green",
-              position: "relative",
-              cursor: "pointer",
-              opacity: isDeclined ? 0 : 1, // Fade out on decline
-              transition: "opacity 0.5s ease-in-out",
-            }}
-            onClick={handleAccept}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                backgroundColor: "white",
+          {/* Spinning Checkmark for Accepted */}
+          {isAccepted ? (
+            <CheckCircleIcon
+              sx={{
+                fontSize: 48,
+                color: "#43b581",
+                animation: `${spin} 0.5s ease-in-out forwards`,
               }}
-            ></div>
-          </div>
+            />
+          ) : isDeclined ? (
+            // Shaking Cross for Rejected
+            <CancelIcon
+              sx={{
+                fontSize: 48,
+                color: "#f04747",
+                animation: `${shake} 0.4s ease-in-out`,
+              }}
+            />
+          ) : (
+            <>
+              {/* Accept Button */}
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: "50%",
+                  backgroundColor: "#43b581",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  "&:hover": { transform: "scale(1.1)" },
+                  marginRight: 2,
+                }}
+                onClick={handleAccept}
+              >
+                <CheckCircleIcon sx={{ color: "white", fontSize: 30 }} />
+              </Box>
 
-          {/* Yang Symbol */}
-          <div
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              backgroundColor: "red",
-              position: "relative",
-              cursor: "pointer",
-              opacity: isDeclined ? 0 : 1, // Fade out on decline
-              transition: "opacity 0.5s ease-in-out",
-            }}
-            onClick={handleDecline}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                backgroundColor: "black",
-              }}
-            ></div>
-          </div>
-        </div>
+              {/* Reject Button */}
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: "50%",
+                  backgroundColor: "#f04747",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  "&:hover": { transform: "scale(1.1)" },
+                }}
+                onClick={handleDecline}
+              >
+                <CancelIcon sx={{ color: "white", fontSize: 30 }} />
+              </Box>
+            </>
+          )}
+        </Box>
       </Card>
     </>
   );
