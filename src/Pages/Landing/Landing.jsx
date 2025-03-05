@@ -2,7 +2,12 @@ import { ReactLenis } from "@studio-freight/react-lenis";
 import React, { useState, useRef } from "react";
 import { motion, useMotionTemplate, useScroll, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import backgroundImage from "./background/background.jpeg";
+import backgroundImage0 from "./background/nova0.jpg";
+import backgroundImage1 from "./background/nova1.jpg";
+import backgroundImage2 from "./background/nova3.avif";
+import backgroundImage3 from "./background/nova4.jpg";
+import backgroundImage4 from "./background/nova4.jpg";
+
 import Features from "./features";
 import {
   FiArrowRight,
@@ -95,6 +100,9 @@ const Hero = () => (
 
 const CenterImage = () => {
   const { scrollY } = useScroll();
+  const images = [backgroundImage0, backgroundImage1, backgroundImage2, backgroundImage3, backgroundImage4];
+  const randomImage = images[Math.floor(Math.random() * images.length)];
+
   const clip1 = useTransform(scrollY, [0, 1500], [25, 0]);
   const clip2 = useTransform(scrollY, [0, 1500], [75, 100]);
   const clipPath = useMotionTemplate`polygon(${clip1}% ${clip1}%, ${clip2}% ${clip1}%, ${clip2}% ${clip2}%, ${clip1}% ${clip2}%)`;
@@ -109,7 +117,7 @@ const CenterImage = () => {
         clipPath,
         backgroundSize,
         opacity,
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `url(${backgroundImage2})`,
         backgroundRepeat: "no-repeat",
       }}
     />
@@ -118,10 +126,11 @@ const CenterImage = () => {
 
 const ParallaxImages = () => (
   <div className="mx-auto max-w-5xl px-4 pt-[200px]">
-    <ParallaxImg src={backgroundImage} alt="Nova" start={-200} end={200} className="w-1/3" />
-    <ParallaxImg src={backgroundImage} alt="Nova" start={200} end={-250} className="mx-auto w-2/3" />
-    <ParallaxImg src={backgroundImage} alt="Nova" start={-200} end={200} className="ml-auto w-1/3" />
-    <ParallaxImg src={backgroundImage} alt="Nova" start={0} end={-500} className="ml-24 w-5/12" />
+    <ParallaxImg src={backgroundImage0} alt="Nova 0" start={-200} end={200} className="w-1/3" />
+    <ParallaxImg src={backgroundImage1} alt="Nova 1" start={200} end={-250} className="mx-auto w-2/3" />
+    <ParallaxImg src={backgroundImage2} alt="Nova 2" start={-200} end={200} className="ml-auto w-1/3" />
+    <ParallaxImg src={backgroundImage3} alt="Nova 3" start={0} end={-500} className="ml-24 w-5/12" />
+    <ParallaxImg src={backgroundImage1} alt="Nova 4" start={0} end={-500} className="ml-24 w-5/12" />
   </div>
 );
 
@@ -129,7 +138,7 @@ const ParallaxImg = ({ className, alt, src, start, end }) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: [`${start}px end`, `end ${end * -1}px`],
+    offset: [`-${start}px end`, `end ${end * -1}px`],
   });
 
   const opacity = useTransform(scrollYProgress, [0.75, 1], [1, 0]);
@@ -157,5 +166,3 @@ const Block = ({ icon: Icon, title, description, className }) => (
     <p className="text-zinc-400 text-sm">{description}</p>
   </motion.div>
 );
-
-
