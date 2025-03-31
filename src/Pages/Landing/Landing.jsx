@@ -1,219 +1,168 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Box, Typography, Button, Card, CardContent, Container, AppBar, Toolbar, useScrollTrigger, Fab, Zoom, CssBaseline } from '@mui/material';
-import { KeyboardArrowUp } from '@mui/icons-material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { ReactLenis } from "@studio-freight/react-lenis";
+import React, { useState, useRef } from "react";
+import { motion, useMotionTemplate, useScroll, useTransform } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import backgroundImage0 from "./background/nova0.jpg";
+import backgroundImage1 from "./background/nova1.jpg";
+import backgroundImage2 from "./background/nova3.avif";
+import backgroundImage3 from "./background/nova4.jpg";
+import backgroundImage4 from "./background/nova4.jpg";
 
-// Dark theme
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#90caf9',
-    },
-    secondary: {
-      main: '#f48fb1',
-    },
-    background: {
-      default: '#121212',
-      paper: '#1e1e1e',
-    },
-  },
-  typography: {
-    fontFamily: 'Poppins, sans-serif',
-  },
-});
+import Features from "./features";
+import {
+  FiArrowRight,
+  FiMail,
+  FiMapPin,
+  FiMessageSquare,
+  FiToggleLeft,
+  FiUsers,
+  FiShoppingCart,
+  FiRepeat,
+  FiGlobe,
+  FiActivity,
+  FiSearch,
+  FiSettings,
+  FiZap,
+  FiDatabase,
+  FiShield,
+} from "react-icons/fi";
+import { SiShopify, SiHandshake } from "react-icons/si";
 
-// Navbar Component
-const Navbar = () => {
-  const [user, setUser] = useState(null); // Mock user state (replace with actual authentication logic)
+const Landing = () => {
+  return (
+    <div className="bg-zinc-950">
+      <ReactLenis root options={{ lerp: 0.05 }}>
+        <Nav />
+        <Hero />
+        <Features />
+      </ReactLenis>
+    </div>
+  );
+};
+
+export default Landing;
+
+// DottedButton Component
+const DottedButton = ({ onClick, children }) => (
+  <button
+    onClick={onClick}
+    className="rounded-xl border border-dashed border-white bg-transparent px-4 py-2 text-xs font-semibold uppercase text-white transition-all duration-300 hover:translate-x-[-2px] hover:translate-y-[-2px] hover:rounded-md hover:shadow-[2px_2px_0px_white] active:translate-x-[0px] active:translate-y-[0px] active:rounded-xl active:shadow-none"
+  >
+    {children}
+  </button>
+);
+
+// Navbar
+const Nav = () => {
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   return (
-    <AppBar position="sticky" elevation={0} sx={{ backgroundColor: '#2a2a2a' }}> {/* Lighter background */}
-      <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          <img src="/logo.png" alt="NOVA Logo" style={{ height: '40px' }} />
-        </Typography>
+    <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-4 py-2 text-white bg-zinc-900/70 backdrop-blur-md">
+      <div className="flex items-center gap-2">
+        <img src="/logo.png" alt="NOVA Logo" className="h-6" />
+        <button
+          onClick={() => {
+            document.getElementById("features-section")?.scrollIntoView({
+              behavior: "smooth",
+            });
+          }}
+          className="text-xs text-zinc-400 hover:text-white transition"
+        >
+          Know More
+        </button>
+      </div>
+
+      <div className="flex gap-2">
         {user ? (
-          <Typography variant="body1">{user.name}</Typography>
+          <p className="text-xs text-zinc-300">{user.name}</p>
         ) : (
           <>
-            <Button color="inherit" sx={{ mr: 2 }} onClick={() => navigate('/register')}>
-              Register
-            </Button>
-            <Button color="inherit" variant="outlined" onClick={() => navigate('/login')}>
-              Login
-            </Button>
+            <DottedButton onClick={() => navigate("/register")}>Register</DottedButton>
+            <DottedButton onClick={() => navigate("/login")}>Login</DottedButton>
           </>
         )}
-      </Toolbar>
-    </AppBar>
+      </div>
+    </nav>
   );
 };
 
 // Hero Section
-const HeroSection = () => {
+const SECTION_HEIGHT = 1500;
+
+const Hero = () => (
+  <div style={{ height: `calc(${SECTION_HEIGHT}px + 100vh)` }} className="relative w-full">
+    <CenterImage />
+    <ParallaxImages />
+    <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-b from-zinc-950/0 to-zinc-950" />
+  </div>
+);
+
+const CenterImage = () => {
+  const { scrollY } = useScroll();
+  const images = [backgroundImage0, backgroundImage1, backgroundImage2, backgroundImage3, backgroundImage4];
+  const randomImage = images[Math.floor(Math.random() * images.length)];
+
+  const clip1 = useTransform(scrollY, [0, 1500], [25, 0]);
+  const clip2 = useTransform(scrollY, [0, 1500], [75, 100]);
+  const clipPath = useMotionTemplate`polygon(${clip1}% ${clip1}%, ${clip2}% ${clip1}%, ${clip2}% ${clip2}%, ${clip1}% ${clip2}%)`;
+
+  const backgroundSize = useTransform(scrollY, [0, SECTION_HEIGHT + 500], ["170%", "100%"]);
+  const opacity = useTransform(scrollY, [SECTION_HEIGHT, SECTION_HEIGHT + 500], [1, 0]);
+
   return (
-    <Box
-      sx={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        background: 'linear-gradient(135deg, #1e1e1e, #121212)',
-        color: 'white',
+    <motion.div
+      className="sticky top-0 h-screen w-full"
+      style={{
+        clipPath,
+        backgroundSize,
+        opacity,
+        backgroundImage: `url(${backgroundImage2})`,
+        backgroundRepeat: "no-repeat",
       }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <Typography variant="h2" sx={{ fontWeight: 'bold', mb: 2 }}>
-          Welcome to NOVA
-        </Typography>
-        <Typography variant="h5" sx={{ mb: 4 }}>
-          The Ultimate Social Platform for Businesses
-        </Typography>
-        <Button variant="contained" size="large" sx={{ mr: 2 }}>
-          Get Started
-        </Button>
-        <Button variant="outlined" size="large">
-          Learn More
-        </Button>
-      </motion.div>
-    </Box>
+    />
   );
 };
 
-// Features Section
-const FeaturesSection = () => {
-  const features = [
-    {
-      title: 'Network Page',
-      description: 'Expand your business network and connect with the right clients or vendors.',
-    },
-    {
-      title: 'Chat Option',
-      description: 'Communicate seamlessly with your connections through our integrated chat system.',
-    },
-    {
-      title: 'E-Store',
-      description: 'Showcase your products and services in a dedicated e-store.',
-    },
-    {
-      title: 'Dynamic Toggle Switch',
-      description: 'Switch between vendor and client modes to find exactly what you need.',
-    },
-  ];
+const ParallaxImages = () => (
+  <div className="mx-auto max-w-5xl px-4 pt-[200px]">
+    <ParallaxImg src={backgroundImage0} alt="Nova 0" start={-200} end={200} className="w-1/3" />
+    <ParallaxImg src={backgroundImage1} alt="Nova 1" start={200} end={-250} className="mx-auto w-2/3" />
+    <ParallaxImg src={backgroundImage2} alt="Nova 2" start={-200} end={200} className="ml-auto w-1/3" />
+    <ParallaxImg src={backgroundImage3} alt="Nova 3" start={0} end={-500} className="ml-24 w-5/12" />
+    <ParallaxImg src={backgroundImage1} alt="Nova 4" start={0} end={-500} className="ml-24 w-5/12" />
+  </div>
+);
 
-  return (
-    <Container sx={{ py: 8 }}>
-      <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', mb: 6 }}>
-        Features
-      </Typography>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-          gap: 4,
-        }}
-      >
-        {features.map((feature, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.2 }}
-            viewport={{ once: true }}
-          >
-            <Card
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                textAlign: 'center',
-                p: 3,
-                background: '#2a2a2a',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  transition: 'transform 0.3s',
-                },
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-                  {feature.title}
-                </Typography>
-                <Typography variant="body1">{feature.description}</Typography>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </Box>
-    </Container>
-  );
-};
-
-// Scroll-to-top button
-const ScrollTop = () => {
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 100,
+const ParallaxImg = ({ className, alt, src, start, end }) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: [`-${start}px end`, `end ${end * -1}px`],
   });
 
-  const handleClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const opacity = useTransform(scrollYProgress, [0.75, 1], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0.75, 1], [1, 0.85]);
 
-  return (
-    <Zoom in={trigger}>
-      <Fab
-        color="primary"
-        size="small"
-        onClick={handleClick}
-        sx={{ position: 'fixed', bottom: 16, right: 16 }}
-      >
-        <KeyboardArrowUp />
-      </Fab>
-    </Zoom>
-  );
+  const y = useTransform(scrollYProgress, [0, 1], [start, end]);
+  const transform = useMotionTemplate`translateY(${y}px) scale(${scale})`;
+
+  return <motion.img src={src} alt={alt} className={className} ref={ref} style={{ transform, opacity }} />;
 };
 
-// Footer
-const Footer = () => {
-  return (
-    <Box
-      sx={{
-        py: 4,
-        background: '#1e1e1e',
-        color: 'white',
-        textAlign: 'center',
-      }}
-    >
-      <Typography variant="body1">© 2025 NOVA. All rights reserved.</Typography>
-    </Box>
-  );
-};
-
-// Main Landing Page
-const LandingPage = () => {
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Navbar />
-      <HeroSection />
-      <FeaturesSection />
-      <Footer />
-      <ScrollTop />
-    </ThemeProvider>
-  );
-};
-
-export default LandingPage;
+// FeaturesSection - Bento Style with Icons & Hover Effects
+const Block = ({ icon: Icon, title, description, className }) => (
+  <motion.div
+    initial={{ scale: 0.5, y: 50, opacity: 0 }}
+    whileInView={{ scale: 1, y: 0, opacity: 1 }}
+    transition={{ type: "spring", mass: 3, stiffness: 400, damping: 50 }}
+    viewport={{ once: true }}
+    className={`col-span-4 rounded-lg border border-zinc-700 bg-zinc-800 p-6 transition-transform hover:scale-105 ${className}`}
+  >
+    <div className="flex items-center gap-3 mb-4">
+      <Icon className="text-3xl text-cyan-400" />
+      <h3 className="text-lg font-bold">{title}</h3>
+    </div>
+    <p className="text-zinc-400 text-sm">{description}</p>
+  </motion.div>
+);
