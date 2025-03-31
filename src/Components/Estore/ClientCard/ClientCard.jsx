@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Box, Typography, Button, Avatar } from "@mui/material";
-
-const ClientCard = ({ client }) => {
+import CustomCarousel from "./CustomSlider/CustomSlider2";
+const ClientCard = ({ request }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -19,12 +19,12 @@ const ClientCard = ({ client }) => {
           position: "relative",
           boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.5)",
           width: "300px",
-          height: "350px",
+          height: "auto",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "16px",
+          padding: "14px",
           "&:hover": {
             transform: "translateY(-10px)",
             transition: "transform 0.3s ease",
@@ -34,13 +34,13 @@ const ClientCard = ({ client }) => {
         {/* Client Details */}
         <Box sx={{ textAlign: "center", mt: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            {client.name}
+            {request.client_name}
           </Typography>
           <Typography variant="body2" sx={{ color: "#aaa", mt: 1 }}>
-            Email: {client.email}
+            Supply Industry: {request.supply_industry}
           </Typography>
           <Typography variant="body2" sx={{ color: "#aaa", mt: 1 }}>
-            Phone: {client.phone}
+            Budget: Rs.{request.budget}
           </Typography>
         </Box>
 
@@ -50,8 +50,15 @@ const ClientCard = ({ client }) => {
             Requirements:
           </Typography>
           <Typography variant="body2" sx={{ color: "#aaa", mt: 1 }}>
-            {client.requirements}
+            {request.request}
           </Typography>
+          
+          {/* Product Image */}
+          <CustomCarousel>
+            {request.images.map((image, index) => {
+              return <img key={index} src={image} alt="requestImage" />;
+            })}
+          </CustomCarousel>
         </Box>
 
         {/* Action Button */}

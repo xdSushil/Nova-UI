@@ -9,7 +9,7 @@ const AnimatedDivider = () => {
     animate: {
       scaleX: 0.2, // Shrinks to 20% of its original width
       transition: {
-        duration: 1,
+        duration: 3,
         repeat: Infinity,
         repeatType: "reverse",
         ease: "easeInOut", // Smooth spring-like effect

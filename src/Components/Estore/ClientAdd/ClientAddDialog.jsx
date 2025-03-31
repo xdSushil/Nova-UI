@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -16,23 +16,16 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { AuthContext } from "../../../Providers/UserContext";
 
-const AddDialog = ({ open, onClose }) => {
+const ClientAddDialog = ({ open, onClose }) => {
     const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-        price: "",
-        discount: "",
-        category: "",
-        subcategory: "",
-        stockQuantity: "",
-        sku: "",
-        vendorName: "",
-        images: []
+        client_name: "",
+        request: "",
+        supply_industry: "",
     });
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-    const { user } = useContext(AuthContext)
-    const handleCloseSnackbar = () => setSnackbar({ open: false, message: "", severity: "success" });
 
+    const handleCloseSnackbar = () => setSnackbar({ open: false, message: "", severity: "success" });
+    const { user } = useContext(AuthContext)
     const [images, setImages] = useState([]);
     const [newItem, setNewItem] = useState("");
 
@@ -56,15 +49,10 @@ const AddDialog = ({ open, onClose }) => {
 
     const handleReset = () => {
         setFormData({
-            name: "",
-            description: "",
-            price: "",
-            discount: "",
-            category: "",
-            subcategory: "",
-            stockQuantity: "",
-            sku: "",
-            vendorName: ""
+            client_name: "",
+            request: "",
+            supply_industry: "",
+            budget: "",
         });
         setImages([]);
     };
@@ -72,12 +60,11 @@ const AddDialog = ({ open, onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            formData.vendorName = user.companyName;
-            formData.vendorId = user.id;
+            formData.client_name = user.companyName;
             formData.images = images;
-            const response = await axios.post("http://localhost:4000/api/products/", formData);
+            const response = await axios.post("http://localhost:4000/api/requests/", formData);
             if (response.status === 201) {
-                setSnackbar({ open: true, message: "Product added successfully!", severity: "success" });
+                setSnackbar({ open: true, message: "Request added successfully!", severity: "success" });
                 onClose();
                 handleReset();
             }
@@ -106,18 +93,18 @@ const AddDialog = ({ open, onClose }) => {
                     style: { backgroundColor: "#1c1c1c", color: "#fff", borderRadius: 8 },
                 }}
             >
-                <DialogTitle>Add a Product</DialogTitle>
+                <DialogTitle>Create a Request</DialogTitle>
                 <DialogContent>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    label="Product Name"
-                                    name="name"
+                                    label="Requirement"
+                                    name="request"
                                     variant="outlined"
                                     fullWidth
                                     required
-                                    value={formData.name}
+                                    value={formData.request}
                                     onChange={handleChange}
                                     InputLabelProps={{ style: { color: "#ccc" } }}
                                     InputProps={{ style: { color: "#fff" } }}
@@ -125,12 +112,25 @@ const AddDialog = ({ open, onClose }) => {
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    label="Description"
-                                    name="description"
+                                    label="Budget"
+                                    name="budget"
                                     variant="outlined"
                                     fullWidth
                                     required
-                                    value={formData.description}
+                                    value={formData.budget}
+                                    onChange={handleChange}
+                                    InputLabelProps={{ style: { color: "#ccc" } }}
+                                    InputProps={{ style: { color: "#fff" } }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Supply Industry"
+                                    name="supply_industry"
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    value={formData.supply_industry}
                                     onChange={handleChange}
                                     InputLabelProps={{ style: { color: "#ccc" } }}
                                     InputProps={{ style: { color: "#fff" } }}
@@ -192,84 +192,6 @@ const AddDialog = ({ open, onClose }) => {
                                 />
                                 <Button sx={{ marginTop: "10px", color: "gray" }} onClick={handleImageClick}> <AddCircleOutlineIcon /></Button>
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Price"
-                                    name="price"
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    type="number"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ style: { color: "#ccc" } }}
-                                    InputProps={{ style: { color: "#fff" } }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Discount"
-                                    name="discount"
-                                    variant="outlined"
-                                    fullWidth
-                                    type="number"
-                                    value={formData.discount}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ style: { color: "#ccc" } }}
-                                    InputProps={{ style: { color: "#fff" } }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Category"
-                                    name="category"
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ style: { color: "#ccc" } }}
-                                    InputProps={{ style: { color: "#fff" } }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Subcategory"
-                                    name="subcategory"
-                                    variant="outlined"
-                                    fullWidth
-                                    value={formData.subcategory}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ style: { color: "#ccc" } }}
-                                    InputProps={{ style: { color: "#fff" } }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Stock Quantity"
-                                    name="stockQuantity"
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    type="number"
-                                    value={formData.stockQuantity}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ style: { color: "#ccc" } }}
-                                    InputProps={{ style: { color: "#fff" } }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="SKU"
-                                    name="sku"
-                                    variant="outlined"
-                                    fullWidth
-                                    value={formData.sku}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ style: { color: "#ccc" } }}
-                                    InputProps={{ style: { color: "#fff" } }}
-                                />
-                            </Grid>
                         </Grid>
 
                         {/* Action Buttons */}
@@ -283,7 +205,7 @@ const AddDialog = ({ open, onClose }) => {
                                 Reset
                             </Button>
                             <Button variant="contained" color="primary" type="submit">
-                                Add Product
+                                Create Request
                             </Button>
                         </Box>
                     </Box>
@@ -305,4 +227,4 @@ const AddDialog = ({ open, onClose }) => {
     );
 };
 
-export default AddDialog;
+export default ClientAddDialog;

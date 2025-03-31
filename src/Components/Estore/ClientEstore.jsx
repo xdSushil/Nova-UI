@@ -1,71 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Fab, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import AddIcon from "@mui/icons-material/Add";
 import AddDialog from "./VendorAddProduct/AddDialog";
 import ClientCard from "./ClientCard/ClientCard"; // Import the ClientCard component
-
-// Sample client data
-const clients = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 234 567 890",
-    requirements: "Looking for a custom gaming PC build with RGB lighting.",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    phone: "+1 987 654 321",
-    requirements: "Need a wireless headphone with noise cancellation.",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    phone: "+1 555 555 555",
-    requirements: "Interested in a 4K monitor for video editing.",
-  },
-  {
-    id: 4,
-    name: "Bob Brown",
-    email: "bob.brown@example.com",
-    phone: "+1 777 888 999",
-    requirements: "Wants a budget-friendly smartwatch with fitness tracking.",
-  },
-  {
-    id: 5,
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    phone: "+1 111 222 333",
-    requirements: "Looking for a portable Bluetooth speaker for outdoor use.",
-  },
-  {
-    id: 5,
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    phone: "+1 111 222 333",
-    requirements: "Looking for a portable Bluetooth speaker for outdoor use.",
-  },
-  {
-    id: 5,
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    phone: "+1 111 222 333",
-    requirements: "Looking for a portable Bluetooth speaker for outdoor use.",
-  },
-  {
-    id: 5,
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    phone: "+1 111 222 333",
-    requirements: "Looking for a portable Bluetooth speaker for outdoor use.",
-  },
-];
+import axios from "axios";
 
 const ClientEstore = () => {
+  const [requests, setRequests] = useState([]);
+  useEffect(() => {
+    const fetchRequests = async () => {
+      const response = await axios.get("http://localhost:4000/api/requests");
+      setRequests(response.data);
+    }
+    fetchRequests();
+  }, []);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -104,15 +53,15 @@ const ClientEstore = () => {
           paddingTop: "10px", // Padding at the top
         }}
       >
-        {clients.map((client, index) => (
+        {requests.map((request, index) => (
           <motion.div
-            key={client.id}
+            key={request.id}
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: index * 0.1 }} // Staggered animation
           >
-            <ClientCard client={client} />
+            <ClientCard request={request} />
           </motion.div>
         ))}
       </Box>
@@ -126,7 +75,7 @@ const ClientEstore = () => {
         sx={{
           position: "fixed",
           bottom: 20,
-          left: 140,
+          right: 80,
           zIndex: 1000,
           backgroundColor: "transparent",
         }}
@@ -148,6 +97,7 @@ const ClientEstore = () => {
       {/* Product Form Dialog */}
       <AddDialog open={open} onClose={handleClose} />
     </Box>
+
   );
 };
 

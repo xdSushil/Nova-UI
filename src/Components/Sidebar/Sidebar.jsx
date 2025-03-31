@@ -4,7 +4,7 @@ import { AuthContext } from "../../Providers/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Paper, Box, Typography, Avatar, Popover, Divider, List, ListItem, ListItemText } from '@mui/material';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
@@ -32,7 +32,7 @@ function Sidebar() {
 
     const icons = [
         { id: 0.10, Icon: HomeOutlinedIcon, label: 'Home' },
-        { id: 1.10, Icon: AssessmentOutlinedIcon, label: 'Analytics' },
+        { id: 1.10, Icon: SmartToyIcon, label: 'Ai Guide' },
         { id: 2.05, Icon: StorefrontOutlinedIcon, label: 'Store' },
         { id: 3.02, Icon: AddBusinessOutlinedIcon, label: 'Network' },
         { id: 4, Icon: ChatBubbleOutlineOutlinedIcon, label: 'Chats' },

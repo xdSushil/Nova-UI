@@ -12,7 +12,12 @@ const EmployeeSection = ({ currentUser }) => {
         <Typography variant="h6" fontWeight="bold" sx={{ color: "#31a3a3" }}>
           Employees:
         </Typography>
+        <PeopleAlt sx={{ color: "#31a3a3", mr: 1, ml:39 }} />
+        <Typography variant="h6" fontWeight="bold" sx={{ color: "#31a3a3" }}>
+          Connections:
+        </Typography>
       </Box>
+      <Box display="flex">
       <Box sx={{ pl: 2 }}>
         {currentUser.employeeEmails.map((email, index) => (
           <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
@@ -20,6 +25,15 @@ const EmployeeSection = ({ currentUser }) => {
           </Typography>
         ))}
       </Box>
+      
+      <Box sx={{ pl: 30 }}>
+        {currentUser.connections.map((connection, index) => (
+          <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
+            • {connection}
+          </Typography>
+        ))}
+      </Box>
+    </Box>
     </Box>
   );
 };

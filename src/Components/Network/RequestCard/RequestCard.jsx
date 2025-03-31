@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardContent, Typography, Avatar, Snackbar, Alert, Box } from "@mui/material";
+import { Card, CardContent, Typography, Avatar, Snackbar, Alert, Box, Button } from "@mui/material";
 import axios from "axios";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -8,7 +8,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Accept Icon
 import CancelIcon from "@mui/icons-material/Cancel"; // Reject Icon
 import { keyframes } from "@emotion/react";
-
+import VendorProfileDialog from "../../Estore/VendorProfileDialog/VendorProfileDialog";
 // Keyframes for animations
 const spin = keyframes`
   0% { transform: rotate(0deg) scale(1); }
@@ -28,7 +28,7 @@ const RequestCard = ({ userData, connectionId }) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [isAccepted, setIsAccepted] = useState(false);
   const [isDeclined, setIsDeclined] = useState(false);
-
+   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleAccept = async () => {
     try {
       const response = await axios.put(
@@ -84,6 +84,11 @@ const RequestCard = ({ userData, connectionId }) => {
     setSnackbarOpen(false);
   };
 
+  const handleProfileClick = () => {
+    setIsDialogOpen(true);
+  };
+
+
   return (
     <>
       {/* Snackbar */}
@@ -101,7 +106,7 @@ const RequestCard = ({ userData, connectionId }) => {
       {/* Card */}
       <Card
         sx={{
-          backgroundColor: "#242729",
+          backgroundColor: "#1e1e1e",
           color: "#979da1",
           width: 900,
           height: 190,
@@ -111,6 +116,10 @@ const RequestCard = ({ userData, connectionId }) => {
           overflow: "visible",
           position: "relative",
           marginBottom: "25px",
+          "&:hover": {
+            transform: "translateY(-10px)",
+            transition: "transform 0.3s ease",
+          },
         }}
       >
         {/* Profile Picture */}
@@ -142,6 +151,22 @@ const RequestCard = ({ userData, connectionId }) => {
             <CategoryIcon /> Supplies: {userData?.productTypes || "Not specified"}
           </Typography>
         </CardContent>
+                  {/* Vendor Details */}
+                  <Button
+                variant="outlined"
+                size="small"
+                sx={{
+                  mt:"80px",
+                  ml:"620px",
+                  borderColor: "#f0f0f0", // Light gray border
+                  color: "#f0f0f0", // Light gray text
+                  "&:hover": { borderColor: "#dcdcdc", color: "#dcdcdc" }, // Hover effect
+                  textTransform: "none",
+                }}
+                onClick={handleProfileClick}
+              >
+                View More
+              </Button>
 
         {/* Accept/Reject Buttons with Animation */}
         <Box
@@ -214,6 +239,12 @@ const RequestCard = ({ userData, connectionId }) => {
           )}
         </Box>
       </Card>
+      {/* Profile Dialog */}
+      <VendorProfileDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        vendorProfile={userData}
+      />
     </>
   );
 };

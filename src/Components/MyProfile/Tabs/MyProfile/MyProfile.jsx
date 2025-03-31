@@ -13,7 +13,7 @@ const MyProfile = () => {
   const [currentUser, setUser] = useState(null);
 
   useEffect(() => {
-    const fetchConnectionStatus = async () => {
+    const fetchUser = async () => {
       try {
         const response = await axios.get(
           `http://localhost:4000/api/users/currentUser/${user.id}`
@@ -23,7 +23,7 @@ const MyProfile = () => {
         console.error("Error fetching users:", error);
       }
     };
-    fetchConnectionStatus();
+    fetchUser();
   }, []);
 
   if (!currentUser) {

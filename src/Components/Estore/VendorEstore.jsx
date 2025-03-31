@@ -1,128 +1,94 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard/ProductCard";
 import { motion } from "framer-motion";
-import { Box } from "@mui/material";
+import { Box, Fab } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import User from "../../Pages/UserLayout/User";
-
-const products = [
-  {
-    id: 1,
-    name: "Wireless Headphones",
-    description: "High-quality noise-canceling headphones.",
-    price: 199.99,
-    vendor: {
-      name: "AudioTech",
-    },
-  },
-  {
-    id: 2,
-    name: "Smart Watch",
-    description: "Track your fitness and stay connected.",
-    price: 249.99,
-    vendor: {
-      name: "TechGear",
-    },
-  },
-  {
-    id: 3,
-    name: "Laptop",
-    description: "Powerful laptop for work and gaming.",
-    price: 1299.99,
-    vendor: {
-      name: "TechWorld",
-    },
-  },
-  {
-    id: 4,
-    name: "Gaming Mouse",
-    description: "Precision gaming mouse with customizable buttons.",
-    price: 79.99,
-    vendor: {
-      name: "GamePro",
-    },
-  },
-  {
-    id: 5,
-    name: "4K Monitor",
-    description: "Ultra HD monitor for immersive viewing.",
-    price: 399.99,
-    vendor: {
-      name: "DisplayTech",
-    },
-  },
-  {
-    id: 6,
-    name: "Bluetooth Speaker",
-    description: "Portable speaker with deep bass and clear sound.",
-    price: 149.99,
-    vendor: {
-      name: "SoundWave",
-    },
-  },
-  {
-    id: 6,
-    name: "Bluetooth Speaker",
-    description: "Portable speaker with deep bass and clear sound.",
-    price: 149.99,
-    vendor: {
-      name: "SoundWave",
-    },
-  },
-  {
-    id: 6,
-    name: "Bluetooth Speaker",
-    description: "Portable speaker with deep bass and clear sound.",
-    price: 149.99,
-    vendor: {
-      name: "SoundWave",
-    },
-  },
-  {
-    id: 6,
-    name: "Bluetooth Speaker",
-    description: "Portable speaker with deep bass and clear sound.",
-    price: 149.99,
-    vendor: {
-      name: "SoundWave",
-    },
-  },
-];
+import axios from "axios";
+import ClientAddDialog from "./ClientAdd/ClientAddDialog";
 
 const VendorEstore = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const response = await axios.get("http://localhost:4000/api/products");
+      setProducts(response.data);
+    }
+    fetchProducts();
+  }, []);
   return (
-
-
     <Box
       sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "repeat(1, 1fr)", // 1 column on small screens
-          sm: "repeat(1, 1fr)", // 2 columns on medium screens
-          md: "repeat(2, 1fr)", // 3 columns on larger screens
-          lg: "repeat(3, 1fr)", // 4 columns on large screens
-        },
-        gap: "30px",
-        justifyContent: "center",
-        paddingTop: "100px",
-        padding: "24px",
-        minHeight: "100vh",
-        margin:"100px",
-        marginLeft:"200px",
-        backgroundColor:"transparent",
+        position: "relative",
+        minHeight: "100vh", // Full viewport height
+        bgcolor: "#121212", // Dark background
+        color: "#fff",
+        padding: 4,
+        width: "100%", // Use full width
+        boxSizing: "border-box",
       }}
     >
 
-      {products.map((product, index) => (
-        <motion.div
-          key={product.id}
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: index * 0.1 }} // Staggered animation
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "30px",
+          justifyContent: "center",
+          paddingTop: "100px",
+          padding: "24px",
+          minHeight: "100vh",
+          margin: "100px",
+          marginLeft: "200px",
+          backgroundColor: "transparent",
+        }}
+      >
+
+        {products.map((product, index) => (
+          <motion.div
+            key={product.id}
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: index * 0.1 }} // Staggered animation
+          >
+            <ProductCard product={product} />
+          </motion.div>
+        ))}
+      </Box>
+      {/* Floating Action Button */}
+      <Box
+        component={motion.div}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        sx={{
+          position: "fixed",
+          bottom: 20,
+          right: 80,
+          zIndex: 1000,
+          backgroundColor: "transparent",
+        }}
+      >
+        <Fab
+          sx={{
+            backgroundColor: "#31a3a3",
+            "&:hover": {
+              backgroundColor: "#2e8f8f",
+            },
+          }}
+          aria-label="add"
+          onClick={handleOpen}
         >
-          <ProductCard product={product} />
-        </motion.div>
-      ))}
+          <AddIcon />
+        </Fab>
+      </Box>
+
+      {/* Product Form Dialog */}
+      <ClientAddDialog open={open} onClose={handleClose} />
     </Box>
 
 

@@ -6,9 +6,11 @@ import {
   Avatar,
   Snackbar,
   Alert,
+  Button
 } from "@mui/material";
 import { motion } from "framer-motion";
 import axios from "axios";
+import VendorProfileDialog from "../Estore/VendorProfileDialog/VendorProfileDialog";
 import { AuthContext } from "../../Providers/UserContext"; // Adjust the path as needed
 import BusinessIcon from "@mui/icons-material/Business";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -18,7 +20,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
   const [switchState, setSwitchState] = useState(connectionStatus); // states: 'stranger', 'pending', 'connected', 'declined'
   const { user } = useContext(AuthContext);
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -79,6 +81,10 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
     setSnackbarOpen(false);
   };
 
+  const handleProfileClick = () => {
+    setIsDialogOpen(true);
+  };
+
   return (
     <>
       {/* Snackbar */}
@@ -99,16 +105,21 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
 
       <Card
         sx={{
-          backgroundColor: "#242729",
+          backgroundColor: "rgba(30, 30, 30, 0.8)",
+          backdropFilter: "blur(12px)",
           color: "#979da1",
           width: 900,
           height: 190,
           borderRadius: 2,
-          boxShadow: 3,
+          boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.5)",
           padding: 3,
           overflow: "visible",
           position: "relative",
-          marginBottom:"25px"
+          marginBottom: "25px",
+          "&:hover": {
+            transform: "translateY(-10px)",
+            transition: "transform 0.3s ease",
+          },
         }}
       >
         {/* Profile Picture in the top-right corner */}
@@ -175,6 +186,22 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
           >
             Supplies: {userData?.productTypes || "Not specified"}
           </Typography>
+          {/* Vendor Details */}
+          <Button
+                variant="outlined"
+                size="small"
+                sx={{
+                  mt:"100px",
+                  ml:"620px",
+                  borderColor: "#f0f0f0", // Light gray border
+                  color: "#f0f0f0", // Light gray text
+                  "&:hover": { borderColor: "#dcdcdc", color: "#dcdcdc" }, // Hover effect
+                  textTransform: "none",
+                }}
+                onClick={handleProfileClick}
+              >
+                View More
+              </Button>
         </CardContent>
         {/* Switch in the bottom-right corner */}
         <div className="absolute bottom-4 right-4">
@@ -198,8 +225,8 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
                   switchState === "stranger"
                     ? 0
                     : switchState === "pending"
-                    ? 33
-                    : 62,
+                      ? 33
+                      : 62,
               }}
               transition={{ type: "spring", stiffness: 300 }}
               style={{
@@ -212,6 +239,12 @@ const ConnectionCard = ({ userData, connectionStatus = "stranger" }) => {
           </motion.div>
         </div>
       </Card>
+      {/* Profile Dialog */}
+      <VendorProfileDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        vendorProfile={userData}
+      />
     </>
   );
 };

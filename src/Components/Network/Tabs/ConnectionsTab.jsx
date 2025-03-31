@@ -20,7 +20,7 @@ const ConnectionsTab = ({ users, user }) => {
         const response = await axios.get(
           `http://localhost:4000/api/connections/accepted/${user.id}`
         );
-        setConnections(response.data || []); // Store the fetched connections
+        setConnections(response.data.data || []); // Store the fetched connections
       } catch (error) {
         console.error("Error fetching accepted connections:", error);
         setConnections([]); // Fallback to an empty array
