@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../Providers/UserContext"
+import { AuthContext } from "../../Providers/UserContext";
 import { Box } from "@mui/material";
 import ChatHeader from "./ChatHeader/ChatHeader";
 import MessageList from "./MessageList/MessageList";
@@ -9,46 +9,88 @@ import Sidebar from "./Sidebar/Sidebar";
 import UserLayout from "../../Pages/UserLayout/User";
 
 const ChatPage = () => {
-  const User = useContext(AuthContext)
-  const [ connections, setConnections ] = useState ([]);
-  useEffect(()=>{
-    const fetchConnections = async () => {
-    try{
-      const response = await axios.get(`http://localhost:4000/api/connections/accepted/${User.user.id}`)
-      setConnections(response.data.data);
-    }catch(error){
-      console.log("Error fetching Connections:", error);
-    }
-  }
-  fetchConnections();
-  },[])
+  const User = useContext(AuthContext);
+  const [connections, setConnections] = useState([]);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [selectedConnection, setSelectedConnection] = useState(null);
 
-  // Fetch or initialize messages for the selected Connection
-  const handleSelectConnection = (connection) => {
-    setSelectedConnection(connection);
-    // Simulate fetching messages for the selected Connection
-    setMessages([
-      { id: 1, sender: "Connection", text: "Hey, how are you?", timestamp: "10:00 AM" },
-      { id: 2, sender: "You", text: "I'm good! What about you?", timestamp: "10:01 AM" },
-    ]);
-  };
-
-  // Add a new message
-  const handleSendMessage = () => {
-    if (newMessage.trim() === "") return;
-
-    const newMsg = {
-      id: messages.length + 1,
-      sender: "You",
-      text: newMessage,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  // Fetch all connections for the logged-in user
+  useEffect(() => {
+    const fetchConnections = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/users/connections/${User.user.id}`
+        );
+        setConnections(response.data);
+      } catch (error) {
+        console.error("Error fetching connections:", error);
+      }
     };
 
-    setMessages([...messages, newMsg]);
-    setNewMessage(""); // Clear input
+    fetchConnections();
+  }, [User?.user?.id]);
+
+  // Fetch messages for the selected connection
+  const fetchMessages = async (senderId, receiverId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/chat/messages/${senderId}/${receiverId}`
+      );
+      setMessages(response.data.messages); // Update the state with fetched messages
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
+  // Handle selecting a connection
+  const handleSelectConnection = (connection) => {
+    setSelectedConnection(connection);
+    // Fetch messages for the selected connection
+    fetchMessages(User.user.id, connection._id);
+  };
+
+  useEffect(() => {
+    let interval;
+
+    if (selectedConnection) {
+      fetchMessages(User.user.id, selectedConnection._id);
+      interval = setInterval(() => {
+        fetchMessages(User.user.id, selectedConnection._id);
+      }, 5000); 
+    }
+    return () => clearInterval(interval);
+  }, [selectedConnection]);
+
+  // Send a new message
+  const handleSendMessage = async () => {
+    if (newMessage.trim() === "") return;
+
+    try {
+      // Send the new message to the backend
+      const response = await axios.post("http://localhost:4000/api/chat/send", {
+        senderId: User.user.id,
+        receiverId: selectedConnection._id,
+        content: newMessage,
+      });
+
+      // Add the sent message to the local state
+      const sentMessage = {
+        id: response.data.data._id,
+        sender: "You",
+        text: newMessage,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      
+      setMessages([...messages, sentMessage]);
+      setNewMessage(""); 
+      fetchMessages(User.user.id, selectedConnection._id);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   return (
@@ -57,13 +99,13 @@ const ChatPage = () => {
       {/* Parent Container for Sidebar and Chat Section */}
       <Box
         sx={{
-          display: "flex", // Use flexbox for horizontal alignment
-          height: "85vh", // Ensure consistent height
+          display: "flex",
+          height: "85vh",
         }}
       >
         {/* Sidebar */}
         <Sidebar
-          Connections = {connections}
+          Connections={connections}
           onSelectConnection={handleSelectConnection}
         />
 
@@ -71,22 +113,22 @@ const ChatPage = () => {
         {selectedConnection && (
           <Box
             sx={{
-              flexGrow: 1, // Take up remaining space
+              flexGrow: 1,
               borderRadius: "25px",
-              height: "100%", // Full height of the parent container
+              height: "100%",
               display: "flex",
               flexDirection: "column",
               bgcolor: "#121212",
               color: "#e0e0e0",
               padding: "16px",
-              mt:"96px",
-              marginLeft: "10px", // Space between sidebar and chat section
+              mt: "96px",
+              marginLeft: "10px",
             }}
           >
             {/* Header */}
             <ChatHeader
-              ConnectionName={selectedConnection.name}
-              ConnectionAvatar={selectedConnection.avatar}
+              ConnectionName={selectedConnection.companyName}
+              connectionAvatar={selectedConnection.avatar}
             />
 
             {/* Messages Container */}
@@ -100,7 +142,7 @@ const ChatPage = () => {
                 bgcolor: "#1e1e1e",
               }}
             >
-              <MessageList messages={messages} />
+              <MessageList messages={messages} currentUserId={User?.user?.id} />
             </Box>
 
             {/* Input Section */}

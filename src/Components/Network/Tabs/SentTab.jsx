@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import axios from "axios";
 import ConnectionCard from "../../ConnectionCard/ConnectionCard";
 
-const SentTab = ({ users, user }) => {
-  const [sentConnections, setSentConnections] = useState([]); // State to store fetched sent connections
-  const [loading, setLoading] = useState(true); // Loading state for API call
+const SentTab = ({ user }) => {
+  const [sentConnections, setSentConnections] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch sent connections when the component mounts
   useEffect(() => {
     const fetchSentConnections = async () => {
       try {
@@ -17,20 +16,26 @@ const SentTab = ({ users, user }) => {
           return;
         }
 
+        // Fetch sent connections from the backend
         const response = await axios.get(
           `http://localhost:4000/api/connections/sent/${user.id}`
         );
-        setSentConnections(response.data || []); // Store the fetched sent connections
+
+        // Log the response for debugging
+        console.log("API Response:", response.data);
+
+        // Set the fetched connections
+        setSentConnections(response.data || []);
       } catch (error) {
         console.error("Error fetching sent connections:", error);
-        setSentConnections([]); // Fallback to an empty array
+        setSentConnections([]);
       } finally {
-        setLoading(false); // Stop loading after the API call
+        setLoading(false); // Stop loading regardless of success or failure
       }
     };
 
     fetchSentConnections();
-  }, [user?.id]); // Re-run the effect if the user ID changes
+  }, [user?.id]);
 
   // Show a loading spinner while fetching data
   if (loading) {
@@ -50,41 +55,26 @@ const SentTab = ({ users, user }) => {
 
   // Handle the case where there are no sent connections
   if (sentConnections.length === 0) {
-    return <Box>No pending requests sent</Box>;
-  }
-
-  // Filter users where the logged-in user is the sender and the status is "pending"
-  const filteredUsers = users.filter((userData) => {
-    const connection = sentConnections.find(
-      (conn) =>
-        conn.senderUserId === user?.id &&
-        conn.receiverUserId === userData._id &&
-        conn.status === "pending"
+    return (
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <Typography variant="h6">No requests sent.</Typography>
+        <Typography variant="body1">
+          Start connecting with others!
+        </Typography>
+      </Box>
     );
-    return !!connection; // Show users with pending requests sent by the logged-in user
-  });
+  }
 
   return (
     <Box>
-      {filteredUsers.length > 0 ? (
-        filteredUsers.map((userData) => {
-          const connection = sentConnections.find(
-            (conn) =>
-              conn.senderUserId === user?.id &&
-              conn.receiverUserId === userData._id &&
-              conn.status === "pending"
-          );
-          return (
-            <ConnectionCard
-              key={userData._id}
-              userData={userData}
-              connectionStatus={connection.status}
-            />
-          );
-        })
-      ) : (
-        <Box>No pending requests sent</Box>
-      )}
+      {/* Render a ConnectionCard for each sent connection */}
+      {sentConnections.map((sentConnection) => (
+        <ConnectionCard
+          key={sentConnection._id}
+          userData={sentConnection.receiver || {}} // Ensure receiver exists
+          connectionStatus={sentConnection.status}
+        />
+      ))}
     </Box>
   );
 };

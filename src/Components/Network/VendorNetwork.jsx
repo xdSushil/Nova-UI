@@ -9,40 +9,7 @@ import ConnectionsTab from "./Tabs/ConnectionsTab";
 
 function VendorNetwork() {
   const { user } = useContext(AuthContext);
-  const [users, setUsers] = useState([]);
-  const [connections, setConnections] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(0);
-
-  // Fetch users
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/api/users/${user.id}`);
-        setUsers(response.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (user?.id) fetchUsers();
-  }, [user?.id]);
-
-  // Fetch connections
-  useEffect(() => {
-    const fetchConnections = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/api/connections/sent/${user.id}`);
-        setConnections(response.data || []);
-        console.log("Connections", connections)
-      } catch (error) {
-        console.error("Error fetching connections:", error);
-        setConnections([]);
-      }
-    };
-    fetchConnections();
-  }, [user?.id]);
 
   // Handle tab change
   const handleTabChange = (event, newValue) => {
@@ -51,32 +18,17 @@ function VendorNetwork() {
 
   // Render the appropriate tab component
   const renderTabContent = () => {
-    if (loading) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      );
-    }
-
     switch (activeTab) {
       case 0:
-        return <FindTab users={users} connections={connections || []} user={user} />;
+        return <FindTab  user={user} />;
       case 1:
-        return <SentTab users={users} connections={connections} user={user} />;
+        return <SentTab  user={user} />;
       case 2:
-        return <RequestsTab users={users} connections={connections} user={user} />;
+        return <RequestsTab  user={user} />;
       case 3:
-        return <ConnectionsTab users={users} connections={connections} user={user} />;
+        return <ConnectionsTab  user={user} />;
       default:
-        return <FindTab users={users} connections={connections} user={user} />;
+        return <FindTab  user={user} />;
     }
   };
 

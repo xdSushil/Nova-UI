@@ -1,35 +1,54 @@
-import React from "react";
-import { Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, CircularProgress } from "@mui/material";
 import ConnectionCard from "../../ConnectionCard/ConnectionCard";
+import axios from "axios";
 
-const FindTab = ({ users, connections, user }) => {
-  // Filter users who are not connected
-  const filteredUsers = users.filter((userData) => {
-    if (connections.length === 0) {
-        return true; // Include all users when connections is empty
-    }else{
-        const connection = connections.find(
-          (conn) =>
-            (conn.senderUserId === user?.id && conn.receiverUserId === userData._id) ||
-            (conn.receiverUserId === user?.id && conn.senderUserId === userData._id)
-        );
-        return !connection; // Show users with no existing connection
+const FindTab = ({ user }) => {
+  const [newUsers, setNewUsers] = useState([])
+  const [loading, setLoading] = useState(true);
+  useEffect(()=>{
+    const fetchNewUsers = async () => {
+      try{
+        const response = await axios.get(`http://localhost:4000/api/users/newUsers/${user.id}`);
+        setNewUsers(response.data);
+      }catch(error){
+        console.log("Error fetching new users:", error)
+      }finally {
+        setLoading(false); 
+      }
+
     }
-  });
+
+    fetchNewUsers()
+  },[])
+  {if (newUsers.length === 0){
+    return <Box>No new Users Right Now</Box>
+  }}
+
+    if (loading) {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      );
+    }
 
   return (
     <Box>
-      {filteredUsers.length > 0 ? (
-        filteredUsers.map((userData) => (
+    {newUsers.map((newUser)=>(
           <ConnectionCard
-            key={userData._id}
-            userData={userData}
+            key={newUser._id}
+            userData={newUser}
             connectionStatus="stranger"
           />
-        ))
-      ) : (
-        <Box>No users available</Box>
-      )}
+    ))}
     </Box>
   );
 };

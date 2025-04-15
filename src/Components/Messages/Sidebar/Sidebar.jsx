@@ -4,8 +4,9 @@ import UserById from "../../../Services/UserById/UserById";
 
 const Sidebar = ({ Connections, onSelectConnection }) => {
   const [connections, setConnections] = useState([])
+  console.log("Connections:", Connections)
   useEffect(()=>{
-    setConnections(UserById(Connections.senderUserId))
+    setConnections(Connections)
   },[Connections])
   return (
     <Box

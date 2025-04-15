@@ -3,7 +3,7 @@ import { Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import RequestCard from "../RequestCard/RequestCard";
 
-const RequestsTab = ({ users, user }) => {
+const RequestsTab = ({ user }) => {
   const [pendingConnections, setPendingConnections] = useState([]); // State to store pending connections
   const [loading, setLoading] = useState(true); // Loading state for API call
 
@@ -23,16 +23,15 @@ const RequestsTab = ({ users, user }) => {
         setPendingConnections(response.data || []); // Store the fetched pending connections
       } catch (error) {
         console.error("Error fetching pending connections:", error);
-        setPendingConnections([]); // Fallback to an empty array
+        setPendingConnections([]); 
       } finally {
-        setLoading(false); // Stop loading after the API call
+        setLoading(false); 
       }
     };
 
     fetchPendingConnections();
-  }, [user?.id]); // Re-run the effect if the user ID changes
+  }, [user?.id]);
 
-  // Show a loading spinner while fetching data
   if (loading) {
     return (
       <Box
@@ -53,37 +52,15 @@ const RequestsTab = ({ users, user }) => {
     return <Box>No pending requests received</Box>;
   }
 
-  // Filter users based on pending connections
-  const filteredUsers = users.filter((userData) =>
-    pendingConnections.some(
-      (conn) =>
-        conn.senderUserId === userData._id &&
-        conn.receiverUserId === user?.id &&
-        conn.status === "pending"
-    )
-  );
-
   return (
     <Box>
-      {filteredUsers.length > 0 ? (
-        filteredUsers.map((userData) => {
-          const connection = pendingConnections.find(
-            (conn) =>
-              conn.senderUserId === userData._id &&
-              conn.receiverUserId === user?.id &&
-              conn.status === "pending"
-          );
-          return (
-            <RequestCard
-              key={userData._id}
-              userData={userData}
-              connectionId={connection._id} // Pass the connection ID for updating the status
-            />
-          );
-        })
-      ) : (
-        <Box>No pending requests received</Box>
-      )}
+      {pendingConnections.map((pendingConnection)=>(
+        <RequestCard
+        key={pendingConnection._id}
+        userData={pendingConnection.sender}
+        connectionId={pendingConnection._id} 
+      />
+      ))}
     </Box>
   );
 };

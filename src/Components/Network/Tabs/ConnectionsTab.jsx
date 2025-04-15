@@ -3,11 +3,9 @@ import { Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import ConnectionCard from "../../ConnectionCard/ConnectionCard";
 
-const ConnectionsTab = ({ users, user }) => {
-  const [connections, setConnections] = useState([]); // State to store fetched connections
-  const [loading, setLoading] = useState(true); // Loading state for API call
-
-  // Fetch accepted connections when the component mounts
+const ConnectionsTab = ({ user }) => {
+  const [connections, setConnections] = useState([]); 
+  const [loading, setLoading] = useState(true); 
   useEffect(() => {
     const fetchAcceptedConnections = async () => {
       try {
@@ -18,21 +16,20 @@ const ConnectionsTab = ({ users, user }) => {
         }
 
         const response = await axios.get(
-          `http://localhost:4000/api/connections/accepted/${user.id}`
+          `http://localhost:4000/api/users/connections/${user.id}`
         );
-        setConnections(response.data.data || []); // Store the fetched connections
+        setConnections(response.data || []); 
       } catch (error) {
         console.error("Error fetching accepted connections:", error);
-        setConnections([]); // Fallback to an empty array
+        setConnections([]); 
       } finally {
-        setLoading(false); // Stop loading after the API call
+        setLoading(false); 
       }
     };
 
     fetchAcceptedConnections();
-  }, [user?.id]); // Re-run the effect if the user ID changes
+  }, [user?.id]);
 
-  // Show a loading spinner while fetching data
   if (loading) {
     return (
       <Box
@@ -47,8 +44,6 @@ const ConnectionsTab = ({ users, user }) => {
       </Box>
     );
   }
-
-  // Handle the case where there are no connections
   if (connections.length === 0) {
     return (
       <Box>
@@ -57,38 +52,16 @@ const ConnectionsTab = ({ users, user }) => {
     );
   }
 
-  // Filter users where the connection status is "connected"
-  const filteredUsers = users.filter((userData) => {
-    const connection = connections.find(
-      (conn) =>
-        ((conn.senderUserId === user?.id && conn.receiverUserId === userData._id) ||
-         (conn.receiverUserId === user?.id && conn.senderUserId === userData._id)) &&
-        conn.status === "connected"
-    );
-    return !!connection; // Show users with accepted connections
-  });
-
   return (
     <Box>
-      {filteredUsers.length > 0 ? (
-        filteredUsers.map((userData) => {
-          const connection = connections.find(
-            (conn) =>
-              ((conn.senderUserId === user?.id && conn.receiverUserId === userData._id) ||
-               (conn.receiverUserId === user?.id && conn.senderUserId === userData._id)) &&
-              conn.status === "connected"
-          );
-          return (
-            <ConnectionCard
-              key={userData._id}
-              userData={userData}
-              connectionStatus={connection.status}
-            />
-          );
-        })
-      ) : (
-        <Box>Uff, seems empty here! 😕 Start making connections now and grow your network! 🌟</Box>
-      )}
+      {/* Render a ConnectionCard for each connection */}
+      {connections.map((connection) => (  
+        <ConnectionCard
+          key={connection._id} 
+          userData={connection} 
+          connectionStatus="connected" 
+        />
+      ))}
     </Box>
   );
 };
