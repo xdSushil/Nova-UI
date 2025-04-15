@@ -57,7 +57,7 @@ const ChatPage = () => {
       fetchMessages(User.user.id, selectedConnection._id);
       interval = setInterval(() => {
         fetchMessages(User.user.id, selectedConnection._id);
-      }, 5000); 
+      }, 1000); 
     }
     return () => clearInterval(interval);
   }, [selectedConnection]);
